@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>TODO</title>
+	<link rel="stylesheet" type="text/css" href="font/iconfont.css">
+	<link rel="stylesheet" type="text/css" href="./css/index.css">
+  <link rel="shortcut icon" type="image/x-icon" href="ico.ico">
+</head>
+<body>
+	<div id="app">
+		<header>
+			<div class="nav">
+				<div class="title">TODO</div>
+			<!-- 	<div class="search">
+					<input v-model='searchValue' @keyup.enter='search'></input>
+					<i
+						@click='clearSearchValue'
+						:class="['iconfont', searchValue.length == 0 ? 'icon-search' : 'icon-delete']"></i>
+				</div> -->
+				<div class="login">Login</div>
+			</div>
+		</header>
+
+		<todo-app :todos='todos' class='todo-app'>
+			<todo-dialog
+				:listdata='listData'
+				v-if='showDialog'
+				@cancel='cancel'
+				@submitlist='submitList'
+				:todo='listData'></todo-dialog>
+			
+			<ul class="todo-title">
+				<li 
+					is='todo-title' 
+					v-for='(todo, index) in todos' 
+					:todo='todo'
+					:title='title'
+					:index='index'
+				 	@handleListTitle='handleListTitle'
+				 	@editlist='editList'
+					@deletelist='deleteList'
+					></li>
+					<li class="addNewList" @click='addNewList'>
+						<!-- <button></button> -->
+						新增
+					</li>
+			</ul>
+			<template slot='content' slot-scope='content'>
+				<list
+					:title='title'
+					:count='content.index'
+					:lists='content.todo.lists'
+					:inputval='inputVal'
+					:editval='editVal'
+					:choosetab='chooseTab'
+					:editindex='editIndex'
+					@changeStatus='changeStatus'
+					@edititem='editItem'
+					@deleteitem='deleteItem'
+					@addnewitem='addNewItem'
+					@confirmedit='confirmEdit'
+				>
+				<todo-tab
+					:choosetab='chooseTab'
+					:titles='titles'
+					@tabchange='tabChange'></todo-tab>
+				</list>
+			</template>
+			<div style="width: 80%;text-align: center;" v-if='!todos || todos.length == 0'>还没有清单呢</div>
+		</todo-app>
+
+		<footer></footer>
+	</div>
+
+	<script type="text/javascript" src="vue.js"></script>
+	<script type="text/javascript" src="./js/index.js"></script>
+</body>
+</html>
