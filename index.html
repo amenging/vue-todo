@@ -8,7 +8,7 @@
   <link rel="shortcut icon" type="image/x-icon" href="ico.ico">
 </head>
 <body>
-  <div id="app">
+  <div id="app" v-cloak>
     <header>
       <div class="nav">
         <div class="title">TODO</div>
@@ -18,24 +18,50 @@
             @click='clearSearchValue'
             :class="['iconfont', searchValue.length == 0 ? 'icon-search' : 'icon-delete']"></i>
         </div> -->
-        <div class="login">Login</div>
-        <todo-dialog v-if='showLogin'>
-          <login-dialog
-            @submit='login'></login-dialog>
-        </todo-dialog>
+        <div 
+          v-if='!username' 
+          class="login" 
+          @click='showLogin = true'>Login</div>
+        <div
+          class='username'
+          v-else>
+          {{ username }}
+          <div class="userMenu">
+            <span class="triangle"></span>
+            <ul>
+              <li @click='clearStorage'>删除本地记录</li>
+              <li @click='logout'>退出登录</li>
+            </ul>
+          </div>
+        </div>
       </div>
-
-      <!-- <div class="dialog"></div> -->
+      <todo-dialog @hidedialog='showLogin = false' v-if='showLogin'>
+        <login-dialog 
+          @login='userAction' 
+          @reg='userAction'
+          :beforesend='beforeSend'
+          :message='userMessage'>
+        </login-dialog>
+      </todo-dialog>
     </header>
 
     <todo-app :todos='todos' class='todo-app'>
-      <todo-dialog v-if='showDialog'>
+      <todo-dialog @hidedialog='showDialog = false' v-if='showDialog'>
         <list-dialog
           :listdata='listData'
           @cancel='cancel'
           @submitlist='submitList'
-          :todo='listData'></list-dialog>
+          :todo='listData'>
+        </list-dialog>
       </todo-dialog>
+
+      <div class="warning" v-show='warning'>
+        {{ warningText }}
+      </div>
+
+      <div class="waiting" v-show='waiting'>
+        <i class="iconfont icon-loading"></i>
+      </div>
 
       <div class="todo-title">
         <div class="todo-title-header">清单列表</div>
@@ -72,7 +98,7 @@
         >
         <todo-tab
           :choosetab='chooseTab'
-          :titles='titles'
+          :tabtitles='tabTitles'
           @tabchange='tabChange'></todo-tab>
         </list>
       </template>

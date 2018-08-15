@@ -23,10 +23,12 @@ input {
 header {
   background: #444c5f;
   background: linear-gradient(to right, #02AAB0, #00CDAC);
-  color: #fff;
   height: 70px;
-  line-height: 70px;
   letter-spacing: 2px;
+}
+.nav {
+  line-height: 70px;
+  color: #fff;
 }
 .search {
   position: relative;
@@ -70,7 +72,6 @@ header {
   margin: 1px auto;
 }
 .todo-title, .todo-list {
-  min-width: 220px;
   box-shadow: 0 0 18px rgba(228, 228, 228, 0.38);
   border-radius: 4px;
   background: #fcfcfc;
@@ -83,8 +84,10 @@ header {
   text-indent: 10px;
 }
 .todo-title {
+  min-width: 220px;
   width: 18%;
-   position: relative; 
+  position: relative; 
+  margin-right: 2%;
 }
 .todo-title ul {
   overflow: hidden;
@@ -208,6 +211,7 @@ header {
   padding-bottom: 30px;
 }
 .dialog-body label {
+  color: #000;
   width: 75px;
   display: inline-block;
   text-align: right;
@@ -217,8 +221,11 @@ header {
   border: 1px solid #ccc;
   padding: 3px;
   border-radius: 2px;
+  background: #fff;
+  padding: 9px;
+  border-radius: 4px;
 }
-.dialog-content div {
+.dialog-content .form-control {
   margin: 10px auto;
 }
 .dialog-footer {
@@ -240,6 +247,36 @@ header {
 .dialog-footer button:last-child {
   background: #00bfad;
   color: #fff;
+}
+
+.login-form {
+  margin-top: 30px;
+  position: relative;
+}
+.login-form .form-control button {
+  background: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  outline: none;
+}
+.form-control button.login {
+  background: #01baae;
+  color: #fff;
+}
+.form-control button.login:active {
+  background: #179a8a;
+}
+.form-control button.reg {
+  border: 1px solid #16caaf;
+  color: #0f9280;
+}
+.form-control button.reg:active {
+  background: #f7f7f7;
+}
+.userMessage {
+  text-align: center;
 }
 /*
 footer {
@@ -297,3 +334,101 @@ footer {
   width: 80%;
   text-align: center;
 }
+.load {
+  animation: loading 1s cubic-bezier(0.24, 0.21, 0.38, 0.54) infinite;
+  display: inline-block;
+}
+@keyframes loading {
+ 
+  to {
+    transform: rotate(320deg);
+  }
+ /* to {
+    transform: rotate(360deg);
+  }*/
+}
+.username:hover .userMenu {
+  display: block;
+}
+.triangle {
+  width: 0;
+  height: 0;
+  border: 10px solid #fff;
+  border-left-color: transparent;
+  border-top-color: transparent;
+  border-right-color: transparent;
+  position: absolute;
+  top: -10px;
+  border-top: none;
+  /* box-shadow: 0 0 10px #ccc; */
+  left: 18px;
+}
+.userMenu {
+  display: none;
+  position: absolute;
+  z-index: 122;
+  top: 60px;
+  background: #fcfcfc;
+  color: #000;
+  font-size: .9em;
+  /* padding: 10px; */
+  border-radius: 5px;
+  box-shadow: 0 0 10px #ccc;
+}
+.userMenu li {
+  list-style: none;
+  line-height: 1.5em;
+  cursor: pointer;
+  padding: 5px 10px;
+  transition: .3s;
+}
+.userMenu li:hover {
+  color: #02aab0;
+}
+.warning {
+  position: absolute;
+  z-index: 100;
+  left: 0;
+  right: 0;
+  width: 240px;
+  margin: auto;
+  background: rgba(1, 192, 174, 0.74);
+  box-shadow: 0 0 10px #ccc;
+  color: #fff;
+  padding: 10px;
+  top: 150px;
+  text-align: center;
+}
+.waiting {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  left: 0;
+  right: 0;
+  margin: auto;
+  background: #ccc;
+  border-radius: 50%;
+  color: #f4f7f6;
+  animation: topToBottom 1s forwards;
+  transform: scale(0);
+}
+@keyframes topToBottom {
+  to {
+    background: #02aab0;
+    box-shadow: 0 0 10px #ccc;
+    transform: scale(1);
+  }
+}
+
+.waiting i {
+  display: inline-block;
+  animation: waiting cubic-bezier(0.02, 0.03, 1, 1) 1s infinite;
+}
+@keyframes waiting {
+  to {
+    transform: rotate(360deg); 
+  }
+}
+    
