@@ -6,6 +6,7 @@
   <link rel="stylesheet" type="text/css" href="font/iconfont.css">
   <link rel="stylesheet" type="text/css" href="./css/index.css">
   <link rel="shortcut icon" type="image/x-icon" href="ico.ico">
+  <script type="text/javascript" src="./js/vue.js"></script>
 </head>
 <body>
   <div id="app" v-cloak>
@@ -63,6 +64,11 @@
         <i class="iconfont icon-loading"></i>
       </div>
 
+      <div class="tips" :style="tipsData.style" v-show='tipsData.show'>
+        <!-- <span class="triangle"></span> -->
+        <span>{{tipsData.words}}</span>
+      </div>
+
       <div class="todo-title">
         <div class="todo-title-header">清单列表</div>
         <ul>
@@ -77,10 +83,26 @@
             @deletelist='deleteList'
             ></li>
         </ul>
-        <button class="addNewList" @click='addNewList'>
-          <i class="iconfont icon-add1"></i>
-        </button>
+        <div class="buttonMenu">
+          <button class="addNewList"
+            @click='addNewList'
+            @mouseenter='showTips("新增清单", $event)'>
+            <i class="iconfont icon-add"></i>
+          </button>
+          <button class="exportFile"
+            @click='exportFile'
+            @mouseenter='showTips("导出json文件", $event)'>
+            <i class="iconfont icon-cloud-down"></i>
+          </button>
+          <button class="importFile"
+            @click='importFile'
+            @mouseenter='showTips("导入json文件", $event)'>
+            <i class="iconfont icon-cloud-up"></i>
+            <input type="file"></input>
+          </button>
+        </div>
       </div>
+
       <template slot='content' slot-scope='content'>
         <list
           :title='title'
@@ -109,7 +131,6 @@
   </div>
 
   <script type="text/javascript" src="./js/axios.min.js"></script>
-  <script type="text/javascript" src="./js/vue.js"></script>
   <script type="text/javascript" src="./js/index.js"></script>
 </body>
 </html>

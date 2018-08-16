@@ -1,11 +1,12 @@
 <?php 
+	header('Content-Type: text/html; charset=UTF-8', true);
 	# 获取用户对应数据
 	include 'db.php';
 
 	$name = $_GET["name"];
 
 	if (!empty($name)) {
-		$select = mysqli_select_db($conn, 'todo_list');
+		$select = mysqli_select_db($conn, 'webuser');
 
 		$getID = "select user_id from users where user_name = '" . $name . "'";
 		$row = mysqli_query($conn, $getID) -> fetch_assoc();

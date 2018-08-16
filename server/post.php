@@ -1,4 +1,5 @@
 <?php 
+	header('Content-Type: text/html; charset=UTF-8', true);
 	# 包含增删改
 	include 'db.php';
 
@@ -7,7 +8,7 @@
 
 	$action = $jsonData['action'];
 
-	$select = mysqli_select_db($conn, 'todo_list');
+	$select = mysqli_select_db($conn, 'webuser');
 
 	if ($action == 'add') {
 		// 增加清单
@@ -29,8 +30,9 @@
 		} else {
 			$list_id = $jsonData['list_id'];
 			$content = $jsonData['content'];
+			$status = $jsonData['status'];
 
-			$sql = "insert into items (content, list_id, status) values ('" . $content . "', '" . $list_id . "', 0)";
+			$sql = "insert into items (content, list_id, status) values ('" . $content . "', '" . $list_id . "', " .$status . ")";
 			$result = mysqli_query($conn, $sql);
 			$id = mysqli_insert_id($conn);
 
@@ -82,7 +84,7 @@
 				$result = mysqli_query($conn, $updateItem);
 
 				if ($result) {
-					echo json_encode(array('code' => '0', 'message' => '修改事项状态'));
+					echo json_encode(array('code' => '0', 'message' => '修改事项状态成功'));
 				}
 			} else {
 				$content = $jsonData['content'];

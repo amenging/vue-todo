@@ -368,16 +368,18 @@ const Cloud = {
       })
     })
   },
-  addNewItem (list_id, content) {
+  addNewItem (list_id, content, status) {
     return new Promise((resolve, reject) => {
       axios.post(url + 'post.php', {
         params: {
           list_id,
           content,
-          action: 'add'
+          action: 'add',
+          status: status || 0
         }
       })
       .then(res => {
+        console.log(res)
         resolve(res.data)
       })
     })
@@ -476,6 +478,26 @@ const Cloud = {
   }
 }
 
+const File = {
+  exportFile (data) {
+    return new Promise((resolve, reject) => {
+      axios.post(url + 'json.php', {
+        params: {
+          data
+        }
+      })
+      .then(res => {
+        var a = document.createElement('a')
+        a.href = url + 'newfile.json'
+        a.setAttribute('download', 'TODO' + Math.random().toString().substr(2) + '.json')
+        a.click()
+        resolve(res.data)
+      })
+    })
+  },
+  importFile () {}
+}
+
 const Todo = new Vue({
   el: '#app',
   data: {
@@ -490,14 +512,21 @@ const Todo = new Vue({
     chooseTab: 0,
     searchValue: '',
     showLogin:  0,
-    userTab: 0,
     userStatus: ['登录', '注册'],
     username: '',
     userMessage: '',
     beforeSend: false,
     warning: false,
     warningText: '你还什么都没有写呢٩(๑`^´๑)۶',
-    waiting: false
+    waiting: false,
+    tipsData: {
+      words: '',
+      style: {
+        top: 0,
+        left: 0
+      },
+      show: false
+    }
   },
   methods: {
     changeStatus (i) {
@@ -669,16 +698,18 @@ const Todo = new Vue({
         const beforeOnline = this.todoData.todos[this.title].online
 
         this.todoData.todos[this.title].name = data.name
-        this.todoData.todos[this.title].online = data.online
+        // this.todoData.todos[this.title].online = data.online
 
 
         if (beforeOnline && !data.online) {
           // 从线上删除
           this.waiting = true
           Cloud.deleteList(this.todos[this.title].list_id)
-          .then((data) => {
+          .then((res) => {
             this.waiting = false
-            if (data.code == 0) {
+            if (res.code == 0) {
+              console.log(data)
+              this.todoData.todos[this.title].online = data.online
               this.showWarning('删除云端清单成功')
             } else {
               this.showWarning('好像出错了呢')
@@ -688,14 +719,16 @@ const Todo = new Vue({
           // 从本地添加到线上
           this.waiting = true
           Cloud.addNewList(this.username, this.todos[this.title].name)
-          .then(data => {
+          .then(res => {
             this.waiting = false
-            if (data.code == 0) {
-              this.todos[this.title].list_id = data.list_id
-              const lists = this.todos[this.title]
+            if (res.code == 0) {
+              // console.log(res)
+              this.todos[this.title].list_id = res.list_id
+              const lists = this.todos[this.title].lists
               for (var i in lists) {
-                Cloud.addNewItem(this.todos[this.title].list_id, lists.content)
+                Cloud.addNewItem(res.list_id, lists[i].content, lists[i].status)
               }
+              this.todoData.todos[this.title].online = data.online
               this.showWarning('添加云端清单成功')
             } else {
               this.showWarning('好像出错了呢')
@@ -704,10 +737,10 @@ const Todo = new Vue({
         } else if (beforeOnline && data.online) {
           this.waiting = true
           Cloud.submitListEdit(data.name, this.todos[this.title].list_id)
-          .then(data => {
+          .then(res => {
             this.waiting = false
-            if (data.code == 0) {
-              this.showWarning(data.message)
+            if (res.code == 0) {
+              this.showWarning(res.message)
             } else {
               this.showWarning('好像出错了呢')
             }
@@ -726,11 +759,11 @@ const Todo = new Vue({
         if (data.online) {
           this.waiting = true
           Cloud.addNewList(this.username, data.name)
-          .then(data => {
+          .then(res => {
             this.waiting = false
-            if (data.code == 0) {
-              this.showWarning(data.message)
-              this.todos[this.title].list_id = data.list_id
+            if (res.code == 0) {
+              this.showWarning(res.message)
+              this.todos[this.title].list_id = res.list_id
             } else {
               this.showWarning('好像出错了呢')
             }
@@ -745,9 +778,6 @@ const Todo = new Vue({
     },
     tabChange (i) {
       this.chooseTab = i
-    },
-    userTabChange (i) {
-      this.userTab = i
     },
     search () {
 
@@ -780,6 +810,7 @@ const Todo = new Vue({
         }
       })
       .then(res => {
+        console.log(res)
         this.beforeSend = false
         this.userMessage = res.data.message
 
@@ -830,6 +861,28 @@ const Todo = new Vue({
       this.warning = true
       setTimeout(() => {
         this.warning = false
+      }, 1000)
+    },
+
+    exportFile () {
+      File.exportFile(JSON.stringify(this.todos))
+    },
+
+    importFile () {
+
+    },
+
+    showTips (txt, e) {
+      this.tipsData = {
+        words: txt,
+        style: {
+          top: e.y + 20 + 'px',
+          left: e.x + 'px'
+        },
+        show: true
+      }
+      setTimeout(() => {
+        this.tipsData.show = false
       }, 1000)
     }
   },

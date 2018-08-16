@@ -57,6 +57,9 @@ header {
   flex-direction: row;
   justify-content: space-between;
 }
+.login, .username {
+  cursor: pointer;
+}
 .todo-app {
   display: flex;
   justify-content: space-between;
@@ -188,7 +191,7 @@ header {
 }
 
 .dialog {
-  position: absolute;
+  position: fixed;
   background: rgba(0, 0, 0, 0.6);
   left: 0;
   top: 0;
@@ -285,8 +288,10 @@ footer {
   width: 100%;
   margin-top: 100px;
 }*/
-.addNewList {
+.buttonMenu {
   position: absolute;
+}
+.buttonMenu button {
   border: none;
   padding: 5px 10px;
   border-radius: 50%;
@@ -298,10 +303,12 @@ footer {
   margin-top: 10px;
   height: 40px;
   box-shadow: 1px 1px 3px #c6d8d7;
-  background: #02b6af;
   color: #fff;
   transition: .5s;
   cursor: pointer;
+}
+.addNewList {
+  background: #02b6af;
 }
 .addNewList:hover {
   transform: rotate(360deg);
@@ -309,6 +316,26 @@ footer {
 .addNewList:active {
   transform: scale(.9);
   background: #049498;
+}
+.exportFile {
+  background: #fbb3b3;
+}
+.exportFile:hover {
+  background: #f19797;
+  /*transform: scaleX(-1);*/
+}
+.exportFile:active {
+  background: #f19797;
+}
+.importFile {
+  background: #bfb3fb;
+}
+.importFile:hover {
+  background: #daa4ea;
+  /*transform: scaleX(-1);*/
+}
+.importFile:active {
+  background: #daa4ea;
 }
 .todo-tab {
   display: flex;
@@ -432,3 +459,11 @@ footer {
   }
 }
     
+.tips {
+  position: absolute;
+  background: rgba(1, 178, 175, 0.45);
+  padding: 5px;
+  border-radius: 5px;
+  color: #fff;
+  z-index: 1;
+}

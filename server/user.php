@@ -10,7 +10,7 @@
 	$action = $jsonData['action'];
 
 	if (!empty($name) && !empty($pass)) {
-		$select = mysqli_select_db($conn, 'todo_list');
+		$select = mysqli_select_db($conn, 'webuser');
 
 		$findName = "select * from users where user_name='" . $name ."'";
 		$nameResult = mysqli_query($conn, $findName) -> fetch_assoc();
