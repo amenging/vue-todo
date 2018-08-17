@@ -94,12 +94,12 @@
             @mouseenter='showTips("导出json文件", $event)'>
             <i class="iconfont icon-cloud-down"></i>
           </button>
-          <button class="importFile"
-            @click='importFile'
+            <!-- @click='importFile' -->
+          <label class="importFile" for="file"
             @mouseenter='showTips("导入json文件", $event)'>
             <i class="iconfont icon-cloud-up"></i>
-            <input type="file"></input>
-          </button>
+          </label>
+          <input ref='fileInput' @change='importFile($event)' id="file" type="file" hidden></input>
         </div>
       </div>
 
@@ -127,7 +127,14 @@
       <div class="nothing" v-if='todos.length == 0'>还没有清单呢</div>
     </todo-app>
 
-    <footer></footer>
+    <footer>
+      <div class="footer-content">
+        <div>
+          <h6>食用说明</h6>
+        </div>
+        github
+      </div>
+    </footer>
   </div>
 
   <script type="text/javascript" src="./js/axios.min.js"></script>

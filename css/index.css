@@ -19,7 +19,25 @@ input {
   outline: none;
   background: none;
 }
-
+/* 设置滚动条的样式 */
+body::-webkit-scrollbar {
+  width: 6px;
+}
+/* 滚动槽 */
+body::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background: #eee;
+}
+/* 滚动条滑块 */
+body::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  /*background: #69d2e7;*/
+  background: rgba(0, 0, 0, .2);
+}
+body::-webkit-scrollbar-thumb:window-inactive {
+  /*background: #69d2e7;*/
+  background: rgba(0, 0, 0, .2);
+}
 header {
   background: #444c5f;
   background: linear-gradient(to right, #02AAB0, #00CDAC);
@@ -281,17 +299,23 @@ header {
 .userMessage {
   text-align: center;
 }
-/*
+
 footer {
   height: 200px;
-  background: linear-gradient(#2c2f3e, #354d5d);
+  /*background: linear-gradient(#2c2f3e, #354d5d);*/
+  border-top: 1px solid #ccc;
   width: 100%;
   margin-top: 100px;
-}*/
+}
+.footer-content {
+  width: 80%;
+  margin:  auto;
+  color:  #555;
+}
 .buttonMenu {
   position: absolute;
 }
-.buttonMenu button {
+.buttonMenu button, .buttonMenu label {
   border: none;
   padding: 5px 10px;
   border-radius: 50%;
@@ -306,6 +330,12 @@ footer {
   color: #fff;
   transition: .5s;
   cursor: pointer;
+}
+.buttonMenu label {
+  display: inline-block;
+  padding: 0;
+  text-align: center;
+  line-height: 40px;
 }
 .addNewList {
   background: #02b6af;
@@ -325,6 +355,7 @@ footer {
   /*transform: scaleX(-1);*/
 }
 .exportFile:active {
+  transform: scale(.9);
   background: #f19797;
 }
 .importFile {
@@ -335,6 +366,7 @@ footer {
   /*transform: scaleX(-1);*/
 }
 .importFile:active {
+  transform: scale(.9);
   background: #daa4ea;
 }
 .todo-tab {
@@ -353,7 +385,7 @@ footer {
   text-align: center;
   transition: .3s;
 }
-.tips {
+.nothing {
   color: #757171;
   text-align: center;
 }

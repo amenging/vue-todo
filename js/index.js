@@ -101,7 +101,7 @@ Vue.component('list', {
         <li v-for='(list, index) in lists' :class='{ "checked": list.status == 1 }'>
           <input
             class='editInput'
-            v-if='editIndex == index && list.status == 0'
+            v-if='editIndex == index && list.status == 0 && choosetab == 0'
             v-model.trim='editValue'
             v-focus='editIndex == index'
             @blur='confirmEdit(index)'
@@ -124,7 +124,7 @@ Vue.component('list', {
             </span>
           </div>
         </li>
-        <div v-if='lists.length == 0' class='tips'>啥都木有哦(*/ω＼*)</div>
+        <div v-if='lists.length == 0' class='nothing'>啥都木有哦(*/ω＼*)</div>
         <input
           v-if='choosetab == 0'
           v-model.trim='val'
@@ -379,7 +379,6 @@ const Cloud = {
         }
       })
       .then(res => {
-        console.log(res)
         resolve(res.data)
       })
     })
@@ -526,7 +525,8 @@ const Todo = new Vue({
         left: 0
       },
       show: false
-    }
+    },
+    file: ''
   },
   methods: {
     changeStatus (i) {
@@ -629,7 +629,7 @@ const Todo = new Vue({
     },
     // 编辑事项
     editItem (i) {
-      this.editVal = this.todoData.todos[this.title].lists[i].content
+      this.editVal = this.todos[this.title].lists[i].content
       this.editIndex = i
 
       this.saveData()
@@ -722,11 +722,13 @@ const Todo = new Vue({
           .then(res => {
             this.waiting = false
             if (res.code == 0) {
-              // console.log(res)
               this.todos[this.title].list_id = res.list_id
-              const lists = this.todos[this.title].lists
-              for (var i in lists) {
+              const lists = this.todoData.todos[this.title].lists
+              for (let i in lists) {
                 Cloud.addNewItem(res.list_id, lists[i].content, lists[i].status)
+                .then(data => {
+                  this.$set(this.todoData.todos[this.title].lists[i], 'items_id', data.items_id)
+                })
               }
               this.todoData.todos[this.title].online = data.online
               this.showWarning('添加云端清单成功')
@@ -868,7 +870,24 @@ const Todo = new Vue({
       File.exportFile(JSON.stringify(this.todos))
     },
 
-    importFile () {
+    importFile (e) {
+      const file = this.$refs.fileInput.files[0]
+
+      const reg = /.json$/
+      if (!reg.test(file.name)) {
+        this.showWarning('请提交json文件哦')
+        return
+      }
+
+      const _this = this
+
+      const reader = new FileReader()
+      reader.readAsText(file, 'uft-8')
+      reader.onload = function (e) {
+        console.log(e.target.result)
+        _this.todoData.todos = JSON.parse(e.target.result)
+        _this.saveData()
+      }
 
     },
 
