@@ -107,7 +107,7 @@ Vue.component('list', {
             @blur='confirmEdit(index)'
             @keyup.enter='confirmEdit(index)'/>
           <div class='checkRadio'>
-            <i 
+            <i
               @click='click(index)' 
               :class='["iconfont", list.status == 1 ? check : uncheck]'></i>
           </div>
@@ -163,6 +163,7 @@ Vue.component('list', {
       this.$emit('changestatus', index)
     },
     editItem (index) {
+      if (this.choosetab != 0) return
       this.$emit('edititem', index)
     },
     deleteItem (index) {
@@ -482,14 +483,25 @@ const File = {
     return new Promise((resolve, reject) => {
       axios.post(url + 'json.php', {
         params: {
-          data
+          data,
+          action: 'out'
         }
       })
       .then(res => {
         var a = document.createElement('a')
-        a.href = url + 'newfile.json'
+        a.href = url + res.data.filename
         a.setAttribute('download', 'TODO' + Math.random().toString().substr(2) + '.json')
         a.click()
+
+        axios.post(url + 'json.php', {
+          params: {
+            name: res.data.filename,
+            action: 'del'
+          }
+        })
+        .then(data => {
+          // console.log(data)
+        })
         resolve(res.data)
       })
     })

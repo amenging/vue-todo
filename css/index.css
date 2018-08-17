@@ -301,7 +301,7 @@ header {
 }
 
 footer {
-  height: 200px;
+  /*height: 200px;*/
   /*background: linear-gradient(#2c2f3e, #354d5d);*/
   border-top: 1px solid #ccc;
   width: 100%;
@@ -338,14 +338,14 @@ footer {
   line-height: 40px;
 }
 .addNewList {
-  background: #02b6af;
+  background: rgba(2, 182, 175, 0.62);
 }
 .addNewList:hover {
   transform: rotate(360deg);
 }
 .addNewList:active {
   transform: scale(.9);
-  background: #049498;
+  background: #00cbac;
 }
 .exportFile {
   background: #fbb3b3;

@@ -84,22 +84,29 @@
             ></li>
         </ul>
         <div class="buttonMenu">
-          <button class="addNewList"
+          <button 
+            class="addNewList"
             @click='addNewList'
             @mouseenter='showTips("新增清单", $event)'>
             <i class="iconfont icon-add"></i>
           </button>
-          <button class="exportFile"
+          <button v-if='username'
+            class="exportFile"
             @click='exportFile'
             @mouseenter='showTips("导出json文件", $event)'>
             <i class="iconfont icon-cloud-down"></i>
           </button>
-            <!-- @click='importFile' -->
-          <label class="importFile" for="file"
+          <label v-if='username'
+            class="importFile" 
+            for="file"
             @mouseenter='showTips("导入json文件", $event)'>
             <i class="iconfont icon-cloud-up"></i>
           </label>
-          <input ref='fileInput' @change='importFile($event)' id="file" type="file" hidden></input>
+          <input hidden
+            ref='fileInput' 
+            @change='importFile($event)' 
+            id="file" 
+            type="file"></input>
         </div>
       </div>
 
@@ -130,7 +137,12 @@
     <footer>
       <div class="footer-content">
         <div>
-          <h6>食用说明</h6>
+          <h4>食用说明</h4>
+          <ul>
+            <li>导入导出功能:
+            一般用于未同步到云端的清单在不同平台上的迁移；重要数据的备份；所以导出到本地的清单同步到云端选项都是否，若要同步到云端请手动勾选</li>
+            <li>只有在全部选项下才能修改清单数据和状态</li>
+          </ul>
         </div>
         github
       </div>
