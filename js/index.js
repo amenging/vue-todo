@@ -108,17 +108,17 @@ Vue.component('list', {
             @keyup.enter='confirmEdit(index)'/>
           <div class='checkRadio'>
             <i
-              @click='click(index)' 
+              @click='click(list.items_id)' 
               :class='["iconfont", list.status == 1 ? check : uncheck]'></i>
           </div>
           <div>
             <span
-              @click='editItem(index)'
+              @click='editItem(list.items_id)'
               class='listContent'>{{ list.content }}</span>
           </div>
           <div>
             <span
-              @click='deleteItem(index)'
+              @click='deleteItem(list.items_id)'
               class='deleteItem'>
               <i class='iconfont icon-delete'></i>
             </span>
@@ -547,14 +547,23 @@ const Todo = new Vue({
     file: ''
   },
   methods: {
-    changeStatus (i) {
-      var list = this.todoData.todos[this.title].lists[i]
-      list.status = Math.abs(list.status - 1)
+    changeStatus (id) {
+      var lists = this.todoData.todos[this.title].lists
 
+      var item
+      for (var i in lists) {
+        if (lists[i].items_id == id) {
+          item = lists[i]
+        }
+      }
+      item.status = Math.abs(item.status - 1)
+      // var list = this.todoData.todos[this.title].lists[i]
+      // list.status = Math.abs(list.status - 1)
+      // console.log(id)
       this.saveData()
       if (this.todos[this.title].online) {
         this.waiting = true
-        Cloud.changeStatus(list.status, list.items_id)
+        Cloud.changeStatus(item.status, item.items_id)
         .then(data => {
           this.waiting = false
           if (data.code == 0) {
@@ -653,10 +662,21 @@ const Todo = new Vue({
       this.saveData()
     },
     // 删除事项
-    deleteItem (i) {
-      const items_id = this.todoData.todos[this.title].lists[i].items_id
+    deleteItem (id) {
+      var lists = this.todoData.todos[this.title].lists
 
-      this.todoData.todos[this.title].lists.splice(i, 1)
+      var item, index
+      for (var i in lists) {
+        if (lists[i].items_id == id) {
+          item = lists[i]
+          index = i
+        }
+      }
+
+      // const items_id = this.todoData.todos[this.title].lists[i].items_id
+      const items_id = item.items_id
+
+      this.todoData.todos[this.title].lists.splice(index, 1)
 
       this.saveData()
 
