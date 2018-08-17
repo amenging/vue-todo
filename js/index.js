@@ -338,6 +338,7 @@ const Cloud = {
         }
       })
       .then(res => {
+        console.log(res)
         resolve(res.data)
       })
     })
@@ -490,7 +491,12 @@ const File = {
       .then(res => {
         var a = document.createElement('a')
         a.href = url + res.data.filename
-        a.setAttribute('download', 'TODO' + Math.random().toString().substr(2) + '.json')
+
+        const date = new Date()
+        const n = '' + date.getFullYear() + (date.getMonth() + 1) + date.getDate() + 
+                  date.getHours() + date.getMinutes() + date.getSeconds()
+
+        a.setAttribute('download', 'TODO-' + n + '.json')
         a.click()
 
         axios.post(url + 'json.php', {

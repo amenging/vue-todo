@@ -76,17 +76,7 @@
 				echo json_encode(array('code' => '0', 'message' => '编辑清单成功'));
 			}
 		} else {
-			if (!empty($jsonData['status'])) {
-				$status = $jsonData['status'];
-				$items_id = $jsonData['items_id'];
-
-				$updateItem = "update items set status='" . $status . "' where items_id='" . $items_id . "'";
-				$result = mysqli_query($conn, $updateItem);
-
-				if ($result) {
-					echo json_encode(array('code' => '0', 'message' => '修改事项状态成功'));
-				}
-			} else {
+			if (!empty($jsonData['content'])) {
 				$content = $jsonData['content'];
 				$items_id = $jsonData['items_id'];
 
@@ -95,6 +85,16 @@
 
 				if ($result) {
 					echo json_encode(array('code' => '0', 'message' => '编辑事项成功'));
+				}
+			} else {
+				$status = $jsonData['status'];
+				$items_id = $jsonData['items_id'];
+
+				$updateItem = "update items set status='" . $status . "' where items_id='" . $items_id . "'";
+				$result = mysqli_query($conn, $updateItem);
+
+				if ($result) {
+					echo json_encode(array('code' => '0', 'message' => '修改事项状态成功'));
 				}
 			}
 		}
