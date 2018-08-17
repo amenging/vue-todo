@@ -867,7 +867,11 @@ const Todo = new Vue({
     },
 
     exportFile () {
-      File.exportFile(JSON.stringify(this.todos))
+      const file = JSON.parse(JSON.stringify(this.todoData.todos))
+      file.forEach(ele => {
+        ele.online = false
+      })
+      File.exportFile(JSON.stringify(file))
     },
 
     importFile (e) {
@@ -915,7 +919,7 @@ const Todo = new Vue({
       } else {
         var todoList = JSON.parse(JSON.stringify(this.todoData.todos))
         var arr = todoList[this.title].lists.filter(ele => {
-          return (ele.status + 1) == this.chooseTab
+          return (ele.status/1 + 1) == this.chooseTab
         })
         todoList[this.title].lists = arr
         return todoList

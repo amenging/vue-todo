@@ -3,9 +3,7 @@
 	$dbuser = 'root';
 	$dbpass = 'root';
 
-	try {
-		include 'remote.php';
-	} catch (Exception $e) {}
+	// include 'remote.php';
 
 	$conn = mysqli_connect($dbhost, $dbuser, $dbpass);
 	if(!$conn) {
