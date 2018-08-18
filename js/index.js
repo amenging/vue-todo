@@ -2,7 +2,6 @@ const url = '/vue-todo/server/'
 
 Vue.directive('focus', {
   inserted (el, {value}) {
-    console.log(value)
     if (value) {
       el.focus()
     }
@@ -427,6 +426,7 @@ const Cloud = {
     })
   },
   getAll (name) {
+    // console.log(name)
     return new Promise((resolve, reject) => {
       axios.get(url + 'query.php', {
         params: {
@@ -434,41 +434,43 @@ const Cloud = {
         }
       })
       .then(res => {
-        const lists = res.data.lists || [], items = res.data.items || []
-
-        const list_id = lists.map(ele => {
-          return ele.list_id
-        })
-        const list_name = lists.map(ele => {
-          return ele.list_name
-        })
-
         const arr = []
-        lists.forEach(ele => {
-          arr.push({
-            name: ele.list_name,
-            online: true,
-            lists: [],
-            list_id: ele.list_id
+        if (res.data.items) {
+          const lists = res.data.lists || [], items = res.data.items || []
+
+          const list_id = lists.map(ele => {
+            return ele.list_id
           })
-        })
+          const list_name = lists.map(ele => {
+            return ele.list_name
+          })
 
-        items.forEach(ele => {
-          arr[list_id.indexOf(ele.list_id)].lists.push(ele)
-        })
+          lists.forEach(ele => {
+            arr.push({
+              name: ele.list_name,
+              online: true,
+              lists: [],
+              list_id: ele.list_id
+            })
+          })
 
-        var obj = localStorage.getItem('todoData')
+          items.forEach(ele => {
+            arr[list_id.indexOf(ele.list_id)].lists.push(ele)
+          })
 
-        if (obj) {
-          var json = JSON.parse(obj).todos
-          for (var i in json) {
-            if (list_name.indexOf(json[i].name) == -1) {
-              arr.push(json[i])
+          var obj = localStorage.getItem('todoData')
+
+          if (obj) {
+            var json = JSON.parse(obj).todos
+            for (var i in json) {
+              if (list_name.indexOf(json[i].name) == -1) {
+                arr.push(json[i])
+              }
             }
           }
-        }
 
-        resolve(arr)
+          resolve(arr)
+        }        
 
       })
       .catch(function (error) {
@@ -850,7 +852,6 @@ const Todo = new Vue({
         }
       })
       .then(res => {
-        console.log(res)
         this.beforeSend = false
         this.userMessage = res.data.message
 
@@ -889,7 +890,7 @@ const Todo = new Vue({
     logout () {
       axios.get(url + 'cookie.php?action=logout')
       .then((res) => {
-        console.log(res)
+        // console.log(res)
         this.username = ''
         this.todoData.todos = []
       })
@@ -977,6 +978,7 @@ const Todo = new Vue({
         this.waiting = true
         Cloud.getAll(res.data)
         .then(data => {
+          console.log(data)
           this.waiting = false
           todoData = {
             todos: data

@@ -15,25 +15,25 @@
 		$getList = "select * from lists where user_id = '" . $id . "'";
 		$list = mysqli_query($conn, $getList);
 
-		// print_r(count($list));
-
-		while ($row = $list -> fetch_assoc()) {
-			$arr1[] = $row;
-		}
-
-		$items = array();
-		
-		for ($i = 0; $i < count($arr1); $i ++) {
-			$getItem = "select * from items where list_id = '" . $arr1[$i]['list_id'] . "'";
-			$item = mysqli_query($conn, $getItem);
-
-			while ($row = $item -> fetch_assoc()) {
-				$items[] = $row;
+		if (mysqli_num_rows($list) > 0) {
+			while ($row = $list -> fetch_assoc()) {
+				$arr1[] = $row;
 			}
-		}
 
-		$result = array('lists' => $arr1, 'items' => $items);
-		echo json_encode($result);
+			$items = array();
+			
+			for ($i = 0; $i < count($arr1); $i ++) {
+				$getItem = "select * from items where list_id = '" . $arr1[$i]['list_id'] . "'";
+				$item = mysqli_query($conn, $getItem);
+
+				while ($row = $item -> fetch_assoc()) {
+					$items[] = $row;
+				}
+			}
+
+			$result = array('lists' => $arr1, 'items' => $items);
+			echo json_encode($result);
+		}
 		
 	}
 ?>
