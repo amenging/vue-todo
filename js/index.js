@@ -546,7 +546,8 @@ const Todo = new Vue({
       },
       show: false
     },
-    file: ''
+    file: '',
+    showMenu: false
   },
   methods: {
     changeStatus (id) {

@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
   <title>TODO</title>
   <link rel="stylesheet" type="text/css" href="font/iconfont.css">
   <link rel="stylesheet" type="text/css" href="./css/index.css">
@@ -12,6 +13,9 @@
   <div id="app" v-cloak>
     <header>
       <div class="nav">
+        <div class="menu" @click='showMenu = true'>
+          <i class="iconfont icon-menu"></i>
+        </div>
         <div class="title">TODO</div>
       <!--  <div class="search">
           <input v-model='searchValue' @keyup.enter='search'></input>
@@ -27,7 +31,8 @@
           <div
             class='username'
             v-else>
-            {{ username }}
+            <span class="username-text">{{ username }}</span>
+            <span class="username-icon"><i class="iconfont icon-caidan08"></i></span>
             <div class="userMenu">
               <span class="triangle"></span>
               <ul>
@@ -57,21 +62,23 @@
           :todo='listData'>
         </list-dialog>
       </todo-dialog>
+      
+      <div class="messageDiv" v-show='warning || waiting'>
+        <div class="warning" v-show='warning'>
+          {{ warningText }}
+        </div>
 
-      <div class="warning" v-show='warning'>
-        {{ warningText }}
-      </div>
-
-      <div class="waiting" v-show='waiting'>
-        <i class="iconfont icon-loading"></i>
+        <div class="waiting" v-show='waiting'>
+          <i class="iconfont icon-loading"></i>
+        </div>
       </div>
 
       <div class="tips" :style="tipsData.style" v-show='tipsData.show'>
-        <!-- <span class="triangle"></span> -->
         <span>{{tipsData.words}}</span>
       </div>
-
-      <div class="todo-title">
+      
+      <div class="grey" v-show='showMenu' @click='showMenu = false'></div>
+      <div :class="['todo-title', 'hideLeft', showMenu ? 'showLeft' : '']">
         <div class="todo-title-header">清单列表</div>
         <ul>
           <li 
@@ -138,15 +145,9 @@
 
     <footer>
       <div class="footer-content">
+        <div>Copyright © 2018 <a href="https://amenging.cn">Ameng.</a> <a href="https://github.com/amenging"><i class="iconfont icon-GitHub"></i></a> </div>
         <div>
-          <h4>食用说明</h4>
-          <ul>
-            <li>导入导出功能:
-            一般用于未同步到云端的清单在不同平台上的迁移；重要数据的备份；所以导出到本地的清单同步到云端选项都是否，若要同步到云端请手动勾选</li>
-            <li>只有在全部选项下才能修改清单数据和状态</li>
-          </ul>
         </div>
-        github
       </div>
     </footer>
   </div>
