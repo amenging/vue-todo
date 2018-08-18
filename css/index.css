@@ -37,7 +37,7 @@ body::-webkit-scrollbar-thumb:window-inactive {
 }
 header {
   background: #444c5f;
-  background: linear-gradient(to right, #02AAB0, #00CDAC);
+  background: linear-gradient(to right, #02AAB0, #00cdac);
   height: 70px;
   letter-spacing: 2px;
 }
