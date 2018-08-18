@@ -1,4 +1,4 @@
-[在线地址](https://www.amenging.xyz.vue-todo)
+[在线地址](https://www.amenging.xyz/vue-todo)
 ### 完成功能
 - [x] 增删改
 - [x] 登录注册
