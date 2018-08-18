@@ -172,7 +172,6 @@ Vue.component('list', {
       this.val = ''
     },
     confirmEdit (index) {
-      // console.log(index)
       this.$emit('confirmedit', { index, val: this.editValue })
     }
   }

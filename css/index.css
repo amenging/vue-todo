@@ -70,6 +70,9 @@ header {
   color: #fff;
   transition: .3s;
 }
+.icon-delete {
+  cursor: pointer;
+}
 .title {
   font-size: 1.6em;
 }
@@ -110,8 +113,8 @@ header {
   text-indent: 10px;
 }
 .todo-title {
-/*  min-width: 220px;
-*/  width: 18%;
+  width: 18%;
+  min-width: 225px;
   position: relative; 
   margin-right: 2%;
 }
@@ -558,9 +561,9 @@ footer {
 .username-icon {
   display: none;
 }
-@media screen and (max-width: 900px) {
+@media screen and (max-width: 1000px) {
   .nav, .todo-app {
-    width: 90%;
+    width: 97%;
   }
 }
 
@@ -573,7 +576,7 @@ footer {
   height: 100%;
   z-index: 1;
 }
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 700px) {
   header {
     position: fixed;
     width: 100%;
@@ -651,7 +654,7 @@ footer {
   }
 }
 
-@media screen and (min-width: 600px) {
+@media screen and (min-width: 700px) {
   .todo-title {
     left: unset;
   }
