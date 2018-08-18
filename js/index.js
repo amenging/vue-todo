@@ -435,42 +435,42 @@ const Cloud = {
       })
       .then(res => {
         const arr = []
-        if (res.data.items) {
-          const lists = res.data.lists || [], items = res.data.items || []
+        const lists = res.data.lists || [], items = res.data.items || []
 
-          const list_id = lists.map(ele => {
-            return ele.list_id
+        const list_id = lists.map(ele => {
+          return ele.list_id
+        })
+        const list_name = lists.map(ele => {
+          return ele.list_name
+        })
+
+        lists.forEach(ele => {
+          arr.push({
+            name: ele.list_name,
+            online: true,
+            lists: [],
+            list_id: ele.list_id
           })
-          const list_name = lists.map(ele => {
-            return ele.list_name
-          })
+        })
 
-          lists.forEach(ele => {
-            arr.push({
-              name: ele.list_name,
-              online: true,
-              lists: [],
-              list_id: ele.list_id
-            })
-          })
+        items.forEach(ele => {
+          arr[list_id.indexOf(ele.list_id)].lists.push(ele)
+        })
 
-          items.forEach(ele => {
-            arr[list_id.indexOf(ele.list_id)].lists.push(ele)
-          })
+        var obj = localStorage.getItem(name)
 
-          var obj = localStorage.getItem('todoData')
-
-          if (obj) {
-            var json = JSON.parse(obj).todos
+        if (obj) {
+          var json = JSON.parse(obj).todos
+          // if (json.username == name) {
             for (var i in json) {
               if (list_name.indexOf(json[i].name) == -1) {
                 arr.push(json[i])
               }
             }
-          }
+          // }
+        }
 
-          resolve(arr)
-        }        
+        resolve(arr)
 
       })
       .catch(function (error) {
@@ -749,7 +749,8 @@ const Todo = new Vue({
             this.waiting = false
             if (res.code == 0) {
               console.log(data)
-              this.todoData.todos[this.title].online = data.online
+              this.$set(this.todoData.todos[this.title], 'online', data.online)
+              // this.todoData.todos[this.title].online = data.online
               this.showWarning('删除云端清单成功')
             } else {
               this.showWarning('好像出错了呢')
@@ -829,7 +830,17 @@ const Todo = new Vue({
     },
 
     saveData () {
-      localStorage.setItem('todoData', JSON.stringify(this.todoData))
+      localStorage.setItem(this.username, JSON.stringify(this.todoData))
+    },
+
+    clearStorage () {
+      localStorage.removeItem(this.username)
+
+      Cloud.getAll(this.username)
+      .then(data => {
+        this.todoData.todos = data
+        this.title = 0
+      })
     },
 
     // 登录注册
@@ -860,6 +871,16 @@ const Todo = new Vue({
         }, 2000)
 
         if (res.data.code == 0) {
+          axios.get(url + 'cookie.php', {
+            params: {
+              action: 'login',
+              username: data.name
+            }
+          })
+          .then(res => {
+            console.log(res)
+          })
+
           if (action == 'login') {
             this.showLogin = false
             this.username = data.name
@@ -879,14 +900,6 @@ const Todo = new Vue({
       })
     },
 
-    clearStorage () {
-      localStorage.removeItem('todoData')
-
-      Cloud.getAll(this.username)
-      .then(data => {
-        this.todoData.todos = data
-      })
-    },
     logout () {
       axios.get(url + 'cookie.php?action=logout')
       .then((res) => {
@@ -967,21 +980,21 @@ const Todo = new Vue({
   },
   mouted () {},
   created () {
-
     let todoData
 
-    axios.get(url + 'cookie.php?action=login')
+    axios.get(url + 'cookie.php?action=relogin')
     .then(res => {
+      console.log(res)
       if (res.data) {
         this.username = res.data
 
         this.waiting = true
         Cloud.getAll(res.data)
         .then(data => {
-          console.log(data)
           this.waiting = false
           todoData = {
-            todos: data
+            todos: data,
+            // username: res.data
           }
           this.todoData = todoData
         })
