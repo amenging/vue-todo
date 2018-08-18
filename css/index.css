@@ -76,6 +76,10 @@ header {
 .title {
   font-size: 1.6em;
 }
+.title img {
+  /*vertical-align: sub;*/
+  width: 28px;
+}
 .nav, .todo-app {
   width: 80%;
   margin: auto;
