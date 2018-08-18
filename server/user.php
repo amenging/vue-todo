@@ -19,7 +19,8 @@
 			if ($nameResult['user_name']) {
 				echo json_encode(array('code' => '3', 'message' => '用户名已存在'));
 			} else {
-				$reg = "insert into users (user_name, user_pass) values ('" . $name . "','" . $pass . "')";
+				$hash = password_hash($pass, PASSWORD_DEFAULT);
+				$reg = "insert into users (user_name, user_pass) values ('" . $name . "','" . $hash . "')";
 				$regReault = mysqli_query($conn, $reg);
 
 				if ($regReault) {
@@ -27,15 +28,10 @@
 				}
 			}
 		} else if ($action == 'login') {
-
 			if ($nameResult['user_name']) {
-				$login = "select * from users where user_name='" . $name ."' and user_pass='" . $pass . "'";
-				$row = mysqli_query($conn, $login) -> fetch_assoc();
-
-				if ($row['user_name']) {
+				$hash_pass = $nameResult['user_pass'];
+				if (password_verify($pass, $hash_pass)) {
 					echo json_encode(array('code' => '0', 'message' => '登录成功'));
-
-					setcookie("username", $name);
 				} else {
 					echo json_encode(array('code' => '2', 'message' => '密码错误'));
 				}

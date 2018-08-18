@@ -19,20 +19,22 @@
             @click='clearSearchValue'
             :class="['iconfont', searchValue.length == 0 ? 'icon-search' : 'icon-delete']"></i>
         </div> -->
-        <div 
-          v-if='!username' 
-          class="login" 
-          @click='showLogin = true'>Login</div>
-        <div
-          class='username'
-          v-else>
-          {{ username }}
-          <div class="userMenu">
-            <span class="triangle"></span>
-            <ul>
-              <li @click='clearStorage'>删除本地记录</li>
-              <li @click='logout'>退出登录</li>
-            </ul>
+        <div>
+          <div 
+            v-if='!username' 
+            class="login" 
+            @click='showLogin = true'> Login </div>
+          <div
+            class='username'
+            v-else>
+            {{ username }}
+            <div class="userMenu">
+              <span class="triangle"></span>
+              <ul>
+                <li @click='clearStorage'>删除本地记录</li>
+                <li @click='logout'>退出登录</li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
