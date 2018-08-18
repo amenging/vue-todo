@@ -97,14 +97,20 @@ Vue.component('list', {
     <div class='todo-list' v-if='count == title'>
       <slot></slot>
       <ul>
+        <input
+          v-if='choosetab == 0'
+          v-model.trim='val'
+          @keyup.enter='addNewItem'
+          class='addNewItem'
+          placeholder='输入后enter新增'></input>
         <li v-for='(list, index) in lists' :class='{ "checked": list.status == 1 }'>
           <input
             class='editInput'
-            v-if='editIndex == index && list.status == 0 && choosetab == 0'
+            v-if='editIndex == list.items_id && list.status == 0'
             v-model.trim='editValue'
-            v-focus='editIndex == index'
-            @blur='confirmEdit(index)'
-            @keyup.enter='confirmEdit(index)'/>
+            v-focus='editIndex == list.items_id'
+            @blur='confirmEdit(list.items_id)'
+            @keyup.enter='confirmEdit(list.items_id)'/>
           <div class='checkRadio'>
             <i
               @click='click(list.items_id)' 
@@ -124,12 +130,6 @@ Vue.component('list', {
           </div>
         </li>
         <div v-if='lists.length == 0' class='nothing'>啥都木有哦(*/ω＼*)</div>
-        <input
-          v-if='choosetab == 0'
-          v-model.trim='val'
-          @keyup.enter='addNewItem'
-          class='addNewItem'
-          placeholder='输入后enter新增'></input>
       </ul>
     </div>
   `,
@@ -162,7 +162,6 @@ Vue.component('list', {
       this.$emit('changestatus', index)
     },
     editItem (index) {
-      if (this.choosetab != 0) return
       this.$emit('edititem', index)
     },
     deleteItem (index) {
@@ -173,6 +172,7 @@ Vue.component('list', {
       this.val = ''
     },
     confirmEdit (index) {
+      // console.log(index)
       this.$emit('confirmedit', { index, val: this.editValue })
     }
   }
@@ -460,17 +460,18 @@ const Cloud = {
         var obj = localStorage.getItem(name)
 
         if (obj) {
-          var json = JSON.parse(obj).todos
+          var json = JSON.parse(obj)
+          var todos = json.todos
           // if (json.username == name) {
-            for (var i in json) {
-              if (list_name.indexOf(json[i].name) == -1) {
-                arr.push(json[i])
+            for (var i in todos) {
+              if (list_name.indexOf(todos[i].name) == -1) {
+                arr.push(todos[i])
               }
             }
           // }
         }
 
-        resolve(arr)
+        resolve({ arr, u_id: json.u_id })
 
       })
       .catch(function (error) {
@@ -547,7 +548,8 @@ const Todo = new Vue({
       show: false
     },
     file: '',
-    showMenu: false
+    showMenu: false,
+    u_id: 'u_0'
   },
   methods: {
     changeStatus (id) {
@@ -560,10 +562,8 @@ const Todo = new Vue({
         }
       }
       item.status = Math.abs(item.status - 1)
-      // var list = this.todoData.todos[this.title].lists[i]
-      // list.status = Math.abs(list.status - 1)
-      // console.log(id)
       this.saveData()
+
       if (this.todos[this.title].online) {
         this.waiting = true
         Cloud.changeStatus(item.status, item.items_id)
@@ -590,7 +590,7 @@ const Todo = new Vue({
       }
       this.showDialog = true
 
-      this.saveData()
+      // this.saveData()
     },
     //编辑清单
     editList (i) {
@@ -598,7 +598,7 @@ const Todo = new Vue({
       this.listData = this.todoData.todos[i]
       this.showDialog = true
 
-      this.saveData()
+      // this.saveData()
     },
     //删除清单
     deleteList (i) {
@@ -634,9 +634,14 @@ const Todo = new Vue({
         return
       }
 
-      this.todoData.todos[this.title].lists.push({
+      let u_id = 'u_' + (this.u_id.substr(2) / 1 + 1)
+      this.u_id = u_id
+
+      this.todoData.u_id = u_id
+      this.todoData.todos[this.title].lists.unshift({
         content: val,
-        status: 0
+        status: 0,
+        items_id: u_id
       })
 
       this.saveData()
@@ -658,9 +663,20 @@ const Todo = new Vue({
       }
     },
     // 编辑事项
-    editItem (i) {
-      this.editVal = this.todos[this.title].lists[i].content
-      this.editIndex = i
+    editItem (id) {
+      var lists = this.todoData.todos[this.title].lists
+
+      var item, index
+      for (var i in lists) {
+        if (lists[i].items_id == id) {
+          item = lists[i]
+          index = i
+        }
+      }
+
+      this.editVal = item.content
+      // this.editIndex = index
+      this.editIndex = item.items_id
 
       this.saveData()
     },
@@ -699,13 +715,27 @@ const Todo = new Vue({
 
     // 编辑事项
     confirmEdit (data) {
+      var id = data.index
+
+      var lists = this.todoData.todos[this.title].lists
+
+      var item, index
+      for (var i in lists) {
+        if (lists[i].items_id == id) {
+          item = lists[i]
+          index = i
+        }
+      }
+
       if (data.val == '') {
         this.showWarning()
         return
       }
       this.editIndex = null
 
-      const item = this.todoData.todos[this.title].lists[data.index]
+      if (this.editVal == data.val) return
+
+      // const item = this.todoData.todos[this.title].lists[data.index]
       item.content = data.val
 
       if (this.todos[this.title].online) {
@@ -994,9 +1024,11 @@ const Todo = new Vue({
         .then(data => {
           this.waiting = false
           todoData = {
-            todos: data,
-            // username: res.data
+            todos: data.arr,
+            u_id: data.u_id
           }
+
+          this.u_id = data.u_id || 'u_0'
           this.todoData = todoData
         })
         

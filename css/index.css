@@ -127,7 +127,6 @@ header {
 .todo-list li {
   transition: .3s;
   border-bottom: 1px solid #ccc;
-  justify-items: ss;
   position: relative;
   display: flex;
 }
@@ -143,7 +142,7 @@ header {
 .titleActive {
   border-left: 1px solid #02b7af;
 }
-.titleActive:after {
+li::before {
   content: '',
   width: 1px;
   height: 100%;
@@ -274,6 +273,9 @@ header {
   cursor: pointer;
   outline: none;
 }
+.dialog-footer button:first-child {
+  background: #e4e4e4;
+}
 .dialog-footer button:last-child {
   background: #00bfad;
   color: #fff;
@@ -391,13 +393,31 @@ footer {
   margin-bottom: 11px;
   cursor: pointer;
 }
-.tab-active {
-  border-bottom: 3px solid #01b9ae;
+
+.tab-active:after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 3px;
+  background: #01b9ae;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  /*animation: long .3s forwards;*/
+  /*opacity: 0;*/
+}
+
+@keyframes long {
+  to {
+   opacity: 1;
+  }
 }
 .tab-item {
   flex: 1;
   text-align: center;
   transition: .3s;
+  position:  relative;
 }
 .nothing {
   color: #757171;
