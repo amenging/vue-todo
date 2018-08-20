@@ -222,7 +222,7 @@ var Cloud = {
           action: 'edit'
         }
       }).then(function (res) {
-        console.log(res);
+        // console.log(res)
         resolve(res.data);
       });
     });
@@ -257,11 +257,11 @@ var Cloud = {
       axios.post(url + 'post.php', {
         params: {
           list_id: list_id,
-          content: content,
-          action: 'add',
-          status: status || 0
+          content: JSON.stringify(content),
+          action: 'add'
         }
       }).then(function (res) {
+        console.log(res);
         resolve(res.data);
       });
     });
@@ -305,13 +305,13 @@ var Cloud = {
     });
   },
   getAll: function getAll(name) {
-    // console.log(name)
     return new Promise(function (resolve, reject) {
       axios.get(url + 'query.php', {
         params: {
           name: name
         }
       }).then(function (res) {
+        // console.log(res)
         var arr = [];
         var lists = res.data.lists || [],
             items = res.data.items || [];
@@ -429,8 +429,6 @@ var Todo = new Vue({
   },
   methods: {
     changeStatus: function changeStatus(id) {
-      var _this2 = this;
-
       var lists = this.todoData.todos[this.title].lists;
 
       var item = void 0;
@@ -439,20 +437,18 @@ var Todo = new Vue({
           item = lists[i];
         }
       }
-      item.status = Math.abs(item.status - 1);
-      this.saveData();
 
       if (this.todos[this.title].online) {
-        this.waiting = true;
         Cloud.changeStatus(item.status, item.items_id).then(function (data) {
-          _this2.waiting = false;
           if (data.code == 0) {
-            _this2.showWarning(data.message);
-          } else {
-            _this2.showWarning('好像出错了呢');
+            item.status = Math.abs(item.status - 1);
           }
         });
+      } else {
+        item.status = Math.abs(item.status - 1);
       }
+
+      this.saveData();
     },
     handleListTitle: function handleListTitle(i) {
       this.title = i;
@@ -482,37 +478,41 @@ var Todo = new Vue({
 
     //删除清单
     deleteList: function deleteList(i) {
-      var _this3 = this;
+      var _this2 = this;
 
       var list_id = this.todos[i].list_id,
           online = this.todos[i].online;
 
-      this.todoData.todos.splice(i, 1);
+      if (online) {
+        Cloud.deleteList(list_id).then(function (data) {
+          if (data.code == 0) {
+            _this2.todoData.todos.splice(i, 1);
 
-      if (this.title == i && !this.todoData.todos[i]) {
-        this.title = i - 1;
+            if (_this2.title >= _this2.todos.length) _this2.title = _this2.title - 1;
+
+            if (_this2.title == i && !_this2.todoData.todos[i]) {
+              _this2.title = i - 1;
+            }
+          }
+        });
+      } else {
+        this.todoData.todos.splice(i, 1);
+
+        if (this.title >= this.todos.length) this.title = this.title - 1;
+
+        if (this.title == i && !this.todoData.todos[i]) {
+          this.title = i - 1;
+        }
       }
 
       this.saveData();
-
-      if (online) {
-        this.waiting = true;
-        Cloud.deleteList(list_id).then(function (data) {
-          _this3.waiting = false;
-          if (data.code == 0) {
-            _this3.showWarning(data.message);
-          } else {
-            _this3.showWarning('好像出错了呢');
-          }
-        });
-      }
     },
 
 
     // 事项操作
     // 新增事项
     addNewItem: function addNewItem(val) {
-      var _this4 = this;
+      var _this3 = this;
 
       if (val == '') {
         this.showWarning();
@@ -523,26 +523,28 @@ var Todo = new Vue({
       this.u_id = u_id;
 
       this.todoData.u_id = u_id;
-      this.todoData.todos[this.title].lists.unshift({
-        content: val,
-        status: 0,
-        items_id: u_id
-      });
 
       this.saveData();
       var list = this.todos[this.title];
       if (list.online) {
-        this.waiting = true;
-        Cloud.addNewItem(list.list_id, val).then(function (data) {
-          _this4.waiting = false;
+        Cloud.addNewItem(list.list_id, [{
+          content: val,
+          status: 0
+        }]).then(function (data) {
           if (data.code == 0) {
-            list.lists[list.lists.length - 1].items_id = data.items_id;
-            _this4.showWarning(data.message);
-          } else {
-            _this4.showWarning('好像出错了呢');
+            _this3.todoData.todos[_this3.title].lists.unshift({
+              content: val,
+              status: 0,
+              items_id: data.items_id
+            });
           }
         });
       } else {
+        this.todoData.todos[this.title].lists.unshift({
+          content: val,
+          status: 0,
+          items_id: u_id
+        });
         this.showWarning('新增本地清单事项成功');
       }
     },
@@ -569,7 +571,7 @@ var Todo = new Vue({
 
     // 删除事项
     deleteItem: function deleteItem(id) {
-      var _this5 = this;
+      var _this4 = this;
 
       var lists = this.todoData.todos[this.title].lists;
 
@@ -582,31 +584,24 @@ var Todo = new Vue({
         }
       }
 
-      // const items_id = this.todoData.todos[this.title].lists[i].items_id
       var items_id = item.items_id;
 
-      this.todoData.todos[this.title].lists.splice(index, 1);
-
-      this.saveData();
-
       if (this.todos[this.title].online) {
-        this.waiting = true;
         Cloud.deleteItem(items_id).then(function (data) {
-          _this5.waiting = false;
           if (data.code == 0) {
-            _this5.showWarning(data.message);
-          } else {
-            _this5.showWarning('好像出错了呢');
+            _this4.todoData.todos[_this4.title].lists.splice(index, 1);
           }
         });
+      } else {
+        this.todoData.todos[this.title].lists.splice(index, 1);
       }
+
+      this.saveData();
     },
 
 
     // 编辑事项
     confirmEdit: function confirmEdit(data) {
-      var _this6 = this;
-
       var id = data.index;
 
       var lists = this.todoData.todos[this.title].lists;
@@ -628,19 +623,14 @@ var Todo = new Vue({
 
       if (this.editVal == data.val) return;
 
-      // const item = this.todoData.todos[this.title].lists[data.index]
-      item.content = data.val;
-
       if (this.todos[this.title].online) {
-        this.waiting = true;
-        Cloud.confirmEdit(data.val, item.items_id).then(function (data) {
-          _this6.waiting = false;
-          if (data.code == 0) {
-            _this6.showWarning(data.message);
-          } else {
-            _this6.showWarning('好像出错了呢');
+        Cloud.confirmEdit(data.val, item.items_id).then(function (res) {
+          if (res.code == 0) {
+            item.content = data.val;
           }
         });
+      } else {
+        item.content = data.val;
       }
     },
     cancel: function cancel() {
@@ -651,7 +641,7 @@ var Todo = new Vue({
 
     // 新增和编辑清单
     submitList: function submitList(data) {
-      var _this7 = this;
+      var _this5 = this;
 
       if (data.name == '') {
         this.showWarning();
@@ -662,82 +652,55 @@ var Todo = new Vue({
       if (this.listData) {
         var beforeOnline = this.todoData.todos[this.title].online;
 
-        this.todoData.todos[this.title].name = data.name;
-        // this.todoData.todos[this.title].online = data.online
-
-
         if (beforeOnline && !data.online) {
           // 从线上删除
-          this.waiting = true;
           Cloud.deleteList(this.todos[this.title].list_id).then(function (res) {
-            _this7.waiting = false;
             if (res.code == 0) {
-              console.log(data);
-              _this7.$set(_this7.todoData.todos[_this7.title], 'online', data.online);
-              // this.todoData.todos[this.title].online = data.online
-              _this7.showWarning('删除云端清单成功');
-            } else {
-              _this7.showWarning('好像出错了呢');
+              _this5.todoData.todos[_this5.title].name = data.name;
+              _this5.$set(_this5.todoData.todos[_this5.title], 'online', data.online);
             }
           });
         } else if (!beforeOnline && data.online) {
           // 从本地添加到线上
-          this.waiting = true;
           Cloud.addNewList(this.username, this.todos[this.title].name).then(function (res) {
-            _this7.waiting = false;
             if (res.code == 0) {
-              _this7.todos[_this7.title].list_id = res.list_id;
-              var lists = _this7.todoData.todos[_this7.title].lists;
+              _this5.todoData.todos[_this5.title].name = data.name;
+              _this5.todos[_this5.title].list_id = res.list_id;
+              var lists = _this5.todoData.todos[_this5.title].lists;
 
-              var _loop = function _loop(i) {
-                Cloud.addNewItem(res.list_id, lists[i].content, lists[i].status).then(function (data) {
-                  _this7.$set(_this7.todoData.todos[_this7.title].lists[i], 'items_id', data.items_id);
-                });
-              };
-
-              for (var i in lists) {
-                _loop(i);
-              }
-              _this7.todoData.todos[_this7.title].online = data.online;
-              _this7.showWarning('添加云端清单成功');
-            } else {
-              _this7.showWarning('好像出错了呢');
+              Cloud.addNewItem(res.list_id, lists);
+              _this5.todoData.todos[_this5.title].online = data.online;
             }
           });
         } else if (beforeOnline && data.online) {
-          this.waiting = true;
           Cloud.submitListEdit(data.name, this.todos[this.title].list_id).then(function (res) {
-            _this7.waiting = false;
-            if (res.code == 0) {
-              _this7.showWarning(res.message);
-            } else {
-              _this7.showWarning('好像出错了呢');
-            }
+            _this5.todoData.todos[_this5.title].name = data.name;
           });
         } else {
+          this.todoData.todos[this.title].name = data.name;
           this.showWarning('编辑本地清单成功');
         }
       } else {
         // 新增
-        this.todoData.todos.push({
-          name: data.name,
-          online: data.online,
-          lists: []
-        });
-        this.title = this.todoData.todos.length - 1;
-
         if (data.online) {
-          this.waiting = true;
           Cloud.addNewList(this.username, data.name).then(function (res) {
-            _this7.waiting = false;
             if (res.code == 0) {
-              _this7.showWarning(res.message);
-              _this7.todos[_this7.title].list_id = res.list_id;
-            } else {
-              _this7.showWarning('好像出错了呢');
+              _this5.todoData.todos.push({
+                name: data.name,
+                online: data.online,
+                lists: [],
+                list_id: res.list_id
+              });
+              _this5.title = _this5.todoData.todos.length - 1;
             }
           });
         } else {
+          this.todoData.todos.push({
+            name: data.name,
+            online: data.online,
+            lists: []
+          });
+          this.title = this.todoData.todos.length - 1;
           this.showWarning('新增本地清单成功');
         }
       }
@@ -756,20 +719,20 @@ var Todo = new Vue({
       localStorage.setItem(this.username, JSON.stringify(this.todoData));
     },
     clearStorage: function clearStorage() {
-      var _this8 = this;
+      var _this6 = this;
 
       localStorage.removeItem(this.username);
 
       Cloud.getAll(this.username).then(function (data) {
-        _this8.todoData.todos = data;
-        _this8.title = 0;
+        _this6.todoData.todos = data;
+        _this6.title = 0;
       });
     },
 
 
     // 登录注册
     userAction: function userAction(data) {
-      var _this9 = this;
+      var _this7 = this;
 
       if (data.name == '') {
         this.showWarning('你倒是写个名字呀');
@@ -786,11 +749,11 @@ var Todo = new Vue({
       axios.post(url + 'user.php', {
         params: _extends({}, data)
       }).then(function (res) {
-        _this9.beforeSend = false;
-        _this9.userMessage = res.data.message;
+        _this7.beforeSend = false;
+        _this7.userMessage = res.data.message;
 
         setTimeout(function () {
-          _this9.userMessage = '';
+          _this7.userMessage = '';
         }, 2000);
 
         if (res.data.code == 0) {
@@ -804,15 +767,15 @@ var Todo = new Vue({
           });
 
           if (action == 'login') {
-            _this9.showLogin = false;
-            _this9.username = data.name;
+            _this7.showLogin = false;
+            _this7.username = data.name;
           }
 
           Cloud.getAll(data.name).then(function (data) {
             var todoData = {
               todos: data
             };
-            _this9.todoData = todoData;
+            _this7.todoData = todoData;
           });
         }
       }).catch(function (error) {
@@ -820,22 +783,26 @@ var Todo = new Vue({
       });
     },
     logout: function logout() {
-      var _this10 = this;
+      var _this8 = this;
 
-      axios.get(url + 'cookie.php?action=logout').then(function (res) {
+      axios.get(url + 'cookie.php', {
+        params: {
+          action: 'logout'
+        }
+      }).then(function (res) {
         // console.log(res)
-        _this10.username = '';
-        _this10.todoData.todos = [];
+        _this8.username = '';
+        _this8.todoData.todos = [];
       });
     },
     showWarning: function showWarning(t) {
-      var _this11 = this;
+      var _this9 = this;
 
       this.warningText = t || '你还什么都没有写呢٩(๑`^´๑)۶';
 
       this.warning = true;
       setTimeout(function () {
-        _this11.warning = false;
+        _this9.warning = false;
       }, 1000);
     },
     exportFile: function exportFile() {
@@ -865,7 +832,7 @@ var Todo = new Vue({
       };
     },
     showTips: function showTips(txt, e) {
-      var _this12 = this;
+      var _this10 = this;
 
       this.tipsData = {
         words: txt,
@@ -876,29 +843,29 @@ var Todo = new Vue({
         show: true
       };
       setTimeout(function () {
-        _this12.tipsData.show = false;
+        _this10.tipsData.show = false;
       }, 1000);
     },
     touchStart: function touchStart(i) {
-      var _this13 = this;
+      var _this11 = this;
 
       this.title = i;
       setTimeout(function () {
-        _this13.showMenu = false;
+        _this11.showMenu = false;
       }, 100);
     }
   },
   watch: {},
   computed: {
     todos: function todos() {
-      var _this14 = this;
+      var _this12 = this;
 
       if (this.chooseTab == 0) {
         return this.todoData.todos;
       } else {
         var todoList = JSON.parse(JSON.stringify(this.todoData.todos));
         var arr = todoList[this.title].lists.filter(function (ele) {
-          return ele.status / 1 + 1 == _this14.chooseTab;
+          return ele.status / 1 + 1 == _this12.chooseTab;
         });
         todoList[this.title].lists = arr;
         return todoList;
@@ -907,28 +874,47 @@ var Todo = new Vue({
   },
   mouted: function mouted() {},
   created: function created() {
-    var _this15 = this;
+    var _this13 = this;
 
     var todoData = void 0;
 
-    axios.get(url + 'cookie.php?action=relogin').then(function (res) {
-      console.log(res);
+    axios.get(url + 'cookie.php', {
+      params: {
+        action: 'relogin'
+      }
+    }).then(function (res) {
       if (res.data) {
-        _this15.username = res.data;
+        _this13.username = res.data.name;
 
-        _this15.waiting = true;
-        Cloud.getAll(res.data).then(function (data) {
-          _this15.waiting = false;
+        _this13.waiting = true;
+        Cloud.getAll(res.data.name).then(function (data) {
           var a = data.arr;
           todoData = {
             todos: a,
             u_id: data.u_id
           };
 
-          _this15.u_id = data.u_id;
-          _this15.todoData = todoData;
+          _this13.u_id = data.u_id;
+          _this13.todoData = todoData;
         });
       }
     });
   }
+});
+
+axios.interceptors.request.use(function (config) {
+  Vue.set(Todo, 'waiting', true);
+  return config;
+}, function (err) {
+  return Promise.reject(err);
+});
+
+axios.interceptors.response.use(function (res) {
+  Vue.set(Todo, 'waiting', false);
+  if (res.data.message && Todo.waiting == false) {
+    Todo.showWarning(res.data.message);
+  }
+  return res;
+}, function (err) {
+  return Promise.reject(err);
 });
