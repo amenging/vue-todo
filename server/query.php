@@ -31,8 +31,10 @@
 				}
 			}
 
-			$result = array('lists' => $arr1, 'items' => $items);
+			$result = array('code' => '0', 'lists' => $arr1, 'items' => $items);
 			echo json_encode($result);
+		} else {
+			echo json_encode(array('code' => '0', 'message' => '没有找到你的云端清单呢'));
 		}
 		
 	}

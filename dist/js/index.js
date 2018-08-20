@@ -342,7 +342,7 @@ const Cloud = {
         }
       })
       .then(res => {
-        console.log(res)
+        // console.log(res)
         resolve(res.data)
       })
     })
@@ -379,12 +379,12 @@ const Cloud = {
       axios.post(url + 'post.php', {
         params: {
           list_id,
-          content,
-          action: 'add',
-          status: status || 0
+          content: JSON.stringify(content),
+          action: 'add'
         }
       })
       .then(res => {
+        console.log(res)
         resolve(res.data)
       })
     })
@@ -431,7 +431,6 @@ const Cloud = {
     })
   },
   getAll (name) {
-    // console.log(name)
     return new Promise((resolve, reject) => {
       axios.get(url + 'query.php', {
         params: {
@@ -439,6 +438,7 @@ const Cloud = {
         }
       })
       .then(res => {
+        // console.log(res)
         const arr = []
         const lists = res.data.lists || [], items = res.data.items || []
 
@@ -569,21 +569,19 @@ const Todo = new Vue({
           item = lists[i]
         }
       }
-      item.status = Math.abs(item.status - 1)
-      this.saveData()
 
       if (this.todos[this.title].online) {
-        this.waiting = true
         Cloud.changeStatus(item.status, item.items_id)
         .then(data => {
-          this.waiting = false
           if (data.code == 0) {
-            this.showWarning(data.message)
-          } else {
-            this.showWarning('好像出错了呢')
+            item.status = Math.abs(item.status - 1)
           }
         })
+      } else {
+        item.status = Math.abs(item.status - 1)
       }
+
+      this.saveData()
     },
     handleListTitle (i) {
       this.title = i
@@ -612,26 +610,30 @@ const Todo = new Vue({
     deleteList (i) {
       const list_id = this.todos[i].list_id, online = this.todos[i].online
 
-      this.todoData.todos.splice(i, 1)
-    
-      if (this.title == i && !this.todoData.todos[i]) {
-        this.title = i - 1
+      if (online) {
+        Cloud.deleteList(list_id)
+        .then((data) => {
+          if (data.code == 0) {
+            this.todoData.todos.splice(i, 1)
+
+            if (this.title >= this.todos.length) this.title = this.title - 1
+
+            if (this.title == i && !this.todoData.todos[i]) {
+              this.title = i - 1
+            }
+          }
+        })
+      } else {
+        this.todoData.todos.splice(i, 1)
+        
+        if (this.title >= this.todos.length) this.title = this.title - 1
+
+        if (this.title == i && !this.todoData.todos[i]) {
+          this.title = i - 1
+        }
       }
 
       this.saveData()
-
-      if (online) {
-        this.waiting = true
-        Cloud.deleteList(list_id)
-        .then((data) => {
-          this.waiting = false
-          if (data.code == 0) {
-            this.showWarning(data.message)
-          } else {
-            this.showWarning('好像出错了呢')
-          }
-        })
-      }
     },
 
     // 事项操作
@@ -646,27 +648,30 @@ const Todo = new Vue({
       this.u_id = u_id
 
       this.todoData.u_id = u_id
-      this.todoData.todos[this.title].lists.unshift({
-        content: val,
-        status: 0,
-        items_id: u_id
-      })
+      
 
       this.saveData()
       const list = this.todos[this.title]
       if (list.online) {
-        this.waiting = true
-        Cloud.addNewItem(list.list_id, val)
+        Cloud.addNewItem(list.list_id, [{
+          content: val,
+          status: 0
+        }])
         .then(data => {
-          this.waiting = false
           if (data.code == 0) {
-            list.lists[list.lists.length - 1].items_id = data.items_id
-            this.showWarning(data.message)
-          } else {
-            this.showWarning('好像出错了呢')
+            this.todoData.todos[this.title].lists.unshift({
+              content: val,
+              status: 0,
+              items_id: data.items_id
+            })
           }
         })
       } else {
+        this.todoData.todos[this.title].lists.unshift({
+          content: val,
+          status: 0,
+          items_id: u_id
+        })
         this.showWarning('新增本地清单事项成功')
       }
     },
@@ -700,25 +705,20 @@ const Todo = new Vue({
         }
       }
 
-      // const items_id = this.todoData.todos[this.title].lists[i].items_id
       const items_id = item.items_id
 
-      this.todoData.todos[this.title].lists.splice(index, 1)
-
-      this.saveData()
-
       if (this.todos[this.title].online) {
-        this.waiting = true
         Cloud.deleteItem(items_id)
         .then(data => {
-          this.waiting = false
           if (data.code == 0) {
-            this.showWarning(data.message)
-          } else {
-            this.showWarning('好像出错了呢')
+            this.todoData.todos[this.title].lists.splice(index, 1)
           }
         })
+      } else {
+        this.todoData.todos[this.title].lists.splice(index, 1)
       }
+
+      this.saveData()
     },
 
     // 编辑事项
@@ -743,20 +743,15 @@ const Todo = new Vue({
 
       if (this.editVal == data.val) return
 
-      // const item = this.todoData.todos[this.title].lists[data.index]
-      item.content = data.val
-
       if (this.todos[this.title].online) {
-        this.waiting = true
         Cloud.confirmEdit(data.val, item.items_id)
-        .then(data => {
-          this.waiting = false
-          if (data.code == 0) {
-            this.showWarning(data.message)
-          } else {
-            this.showWarning('好像出错了呢')
+        .then(res => {
+          if (res.code == 0) {
+            item.content = data.val
           }
         })
+      } else {
+        item.content = data.val
       }
     },
 
@@ -776,81 +771,58 @@ const Todo = new Vue({
       if (this.listData) {
         const beforeOnline = this.todoData.todos[this.title].online
 
-        this.todoData.todos[this.title].name = data.name
-        // this.todoData.todos[this.title].online = data.online
-
-
         if (beforeOnline && !data.online) {
           // 从线上删除
-          this.waiting = true
           Cloud.deleteList(this.todos[this.title].list_id)
           .then((res) => {
-            this.waiting = false
             if (res.code == 0) {
-              console.log(data)
+              this.todoData.todos[this.title].name = data.name
               this.$set(this.todoData.todos[this.title], 'online', data.online)
-              // this.todoData.todos[this.title].online = data.online
-              this.showWarning('删除云端清单成功')
-            } else {
-              this.showWarning('好像出错了呢')
             }
           })
         } else if (!beforeOnline && data.online){
           // 从本地添加到线上
-          this.waiting = true
           Cloud.addNewList(this.username, this.todos[this.title].name)
           .then(res => {
-            this.waiting = false
             if (res.code == 0) {
+              this.todoData.todos[this.title].name = data.name
               this.todos[this.title].list_id = res.list_id
               const lists = this.todoData.todos[this.title].lists
-              for (let i in lists) {
-                Cloud.addNewItem(res.list_id, lists[i].content, lists[i].status)
-                .then(data => {
-                  this.$set(this.todoData.todos[this.title].lists[i], 'items_id', data.items_id)
-                })
-              }
+
+              Cloud.addNewItem(res.list_id, lists)
               this.todoData.todos[this.title].online = data.online
-              this.showWarning('添加云端清单成功')
-            } else {
-              this.showWarning('好像出错了呢')
             }
           })
         } else if (beforeOnline && data.online) {
-          this.waiting = true
           Cloud.submitListEdit(data.name, this.todos[this.title].list_id)
           .then(res => {
-            this.waiting = false
-            if (res.code == 0) {
-              this.showWarning(res.message)
-            } else {
-              this.showWarning('好像出错了呢')
-            }
+            this.todoData.todos[this.title].name = data.name
           })
         } else {
+          this.todoData.todos[this.title].name = data.name
           this.showWarning('编辑本地清单成功')
         }
       } else { // 新增
-        this.todoData.todos.push({
-          name: data.name,
-          online: data.online,
-          lists: []
-        })
-        this.title = this.todoData.todos.length - 1
-
         if (data.online) {
-          this.waiting = true
           Cloud.addNewList(this.username, data.name)
           .then(res => {
-            this.waiting = false
             if (res.code == 0) {
-              this.showWarning(res.message)
-              this.todos[this.title].list_id = res.list_id
-            } else {
-              this.showWarning('好像出错了呢')
+              this.todoData.todos.push({
+                name: data.name,
+                online: data.online,
+                lists: [],
+                list_id: res.list_id
+              })
+              this.title = this.todoData.todos.length - 1
             }
           })
         } else {
+          this.todoData.todos.push({
+            name: data.name,
+            online: data.online,
+            lists: []
+          })
+          this.title = this.todoData.todos.length - 1
           this.showWarning('新增本地清单成功')
         }
       }
@@ -940,7 +912,11 @@ const Todo = new Vue({
     },
 
     logout () {
-      axios.get(url + 'cookie.php?action=logout')
+      axios.get(url + 'cookie.php', {
+        params: {
+          action: 'logout'
+        }
+      })
       .then((res) => {
         // console.log(res)
         this.username = ''
@@ -1028,16 +1004,18 @@ const Todo = new Vue({
   created () {
     let todoData
 
-    axios.get(url + 'cookie.php?action=relogin')
+    axios.get(url + 'cookie.php', {
+      params: {
+        action: 'relogin'
+      }
+    })
     .then(res => {
-      console.log(res)
       if (res.data) {
-        this.username = res.data
+        this.username = res.data.name
 
         this.waiting = true
-        Cloud.getAll(res.data)
+        Cloud.getAll(res.data.name)
         .then(data => {
-          this.waiting = false
           const a = data.arr
           todoData = {
             todos: a,
@@ -1055,3 +1033,27 @@ const Todo = new Vue({
 
 
 })
+
+axios.interceptors.request.use((config) => {
+  Vue.set(Todo, 'waiting', true)
+  return config
+}, err => {
+  return Promise.reject(err)
+})
+
+axios.interceptors.response.use((res) => {
+  Vue.set(Todo, 'waiting', false)
+  if (res.data.message && Todo.waiting == false) {
+    Todo.showWarning(res.data.message)
+  }
+  return res
+}, err => {
+  return Promise.reject(err)
+})
+
+// axios.post('http://yapi.demo.qunar.com/mock/16752/post', {
+
+// })
+// .then(res => {
+//   console.log(res)
+// })

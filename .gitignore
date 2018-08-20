@@ -5,3 +5,4 @@ package-lock.json
 package.json
 gulpfile.babel.js
 .babelrc
+dist/js/vue.js
