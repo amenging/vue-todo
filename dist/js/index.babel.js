@@ -167,7 +167,6 @@ Vue.component('list-dialog', {
 
 // 登录框
 Vue.component('login-dialog', {
-  props: ['message', 'beforesend'],
   data: function data() {
     return {
       username: '',
@@ -175,7 +174,7 @@ Vue.component('login-dialog', {
     };
   },
 
-  template: '\n    <form class=\'dialog-content login-form\'>\n      <div class=\'form-control\'>\n        <label>\u7528\u6237\u540D</label>\n        <input\n          autocomplete=\'username\'\n          placeholder=\'\u7528\u6237\u540D\uFF0810\u4E2A\u5B57\u7B26\u4EE5\u5185\uFF09\'\n          v-focus=\'true\'\n          maxlength=\'10\' \n          v-model.trim=\'username\' />\n      </div>\n      <div class=\'form-control\'>\n        <label>\u5BC6\u7801</label>\n        <input\n          type=\'password\'\n          autocomplete=\'current-password\'\n          placeholder=\'\u5BC6\u7801\uFF0812\u4E2A\u5B57\u7B26\u4EE5\u5185\uFF09\'\n          maxlength=\'12\' \n          v-model.trim=\'password\' />\n      </div>\n      <div class=\'form-control\'>\n        <label></label>\n        <button @click.stop.prevent=\'login\' class=\'login\'>\u767B\u5F55</button>\n        <button @click.stop.prevent=\'reg\' class=\'reg\'>\u6CE8\u518C</button>\n        <i v-if=\'beforesend\' class=\'iconfont icon-loading load\'></i>\n      </div>\n      <div class=\'userMessage\' v-if=\'message\'>{{ message }}</div>\n    </form>\n  ',
+  template: '\n    <form class=\'dialog-content login-form\'>\n      <div class=\'form-control\'>\n        <label>\u7528\u6237\u540D</label>\n        <input\n          autocomplete=\'username\'\n          placeholder=\'\u7528\u6237\u540D\uFF0810\u4E2A\u5B57\u7B26\u4EE5\u5185\uFF09\'\n          v-focus=\'true\'\n          maxlength=\'10\' \n          v-model.trim=\'username\' />\n      </div>\n      <div class=\'form-control\'>\n        <label>\u5BC6\u7801</label>\n        <input\n          type=\'password\'\n          autocomplete=\'current-password\'\n          placeholder=\'\u5BC6\u7801\uFF0812\u4E2A\u5B57\u7B26\u4EE5\u5185\uFF09\'\n          maxlength=\'12\' \n          v-model.trim=\'password\' />\n      </div>\n      <div class=\'form-control\'>\n        <label></label>\n        <button @click.stop.prevent=\'login\' class=\'login\'>\u767B\u5F55</button>\n        <button @click.stop.prevent=\'reg\' class=\'reg\'>\u6CE8\u518C</button>\n      </div>\n    </form>\n  ',
   methods: {
     login: function login() {
       this.$emit('login', {
@@ -410,8 +409,6 @@ var Todo = new Vue({
     showLogin: 0,
     userStatus: ['登录', '注册'],
     username: '',
-    userMessage: '',
-    beforeSend: false,
     warning: false,
     warningText: '你还什么都没有写呢٩(๑`^´๑)۶',
     waiting: false,
@@ -724,7 +721,7 @@ var Todo = new Vue({
       localStorage.removeItem(this.username);
 
       Cloud.getAll(this.username).then(function (data) {
-        _this6.todoData.todos = data;
+        _this6.todoData.todos = data.arr;
         _this6.title = 0;
       });
     },
@@ -742,19 +739,12 @@ var Todo = new Vue({
         this.showWarning('你倒是输入密码呀');
         return;
       }
-      this.beforeSend = true;
 
       var action = data.action;
 
       axios.post(url + 'user.php', {
         params: _extends({}, data)
       }).then(function (res) {
-        _this7.beforeSend = false;
-        _this7.userMessage = res.data.message;
-
-        setTimeout(function () {
-          _this7.userMessage = '';
-        }, 2000);
 
         if (res.data.code == 0) {
           axios.get(url + 'cookie.php', {
@@ -763,20 +753,21 @@ var Todo = new Vue({
               username: data.name
             }
           }).then(function (res) {
-            console.log(res);
+            // console.log(res)
           });
 
           if (action == 'login') {
             _this7.showLogin = false;
             _this7.username = data.name;
+            Cloud.getAll(data.name).then(function (data) {
+              var a = data.arr;
+              var todoData = {
+                todos: a,
+                u_id: data.u_id
+              };
+              _this7.todoData = todoData;
+            });
           }
-
-          Cloud.getAll(data.name).then(function (data) {
-            var todoData = {
-              todos: data
-            };
-            _this7.todoData = todoData;
-          });
         }
       }).catch(function (error) {
         console.log(error);

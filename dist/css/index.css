@@ -570,7 +570,13 @@ footer {
   height: 100%;
   z-index: 2;
 }
+.phone-username {
+  display: none;
+}
 @media screen and (max-width: 700px) {
+  .phone-username {
+    display: block;
+  }
   header {
     position: fixed;
     width: 100%;

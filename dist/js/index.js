@@ -844,7 +844,7 @@ const Todo = new Vue({
 
       Cloud.getAll(this.username)
       .then(data => {
-        this.todoData.todos = data
+        this.todoData.todos = data.arr
         this.title = 0
       })
     },
@@ -877,7 +877,7 @@ const Todo = new Vue({
             }
           })
           .then(res => {
-            console.log(res)
+            // console.log(res)
           })
 
           if (action == 'login') {

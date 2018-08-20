@@ -8,7 +8,7 @@
   <link rel="stylesheet" type="text/css" href="./dist/css/index.css">
   <link rel="shortcut icon" type="image/x-icon" href="./dist/imgs/ico.ico">
   <script type="text/javascript" src="./dist/js/vue.js"></script>
-  <!-- <script type="text/javascript" src="./dist/js/vue.min.js"></script> -->
+  <script type="text/javascript" src="./dist/js/vue.min.js"></script>
 </head>
 <body>
   <div id="app" v-cloak>
@@ -48,6 +48,7 @@
             <div class="userMenu">
               <span class="triangle"></span>
               <ul>
+                <li class="phone-username">{{ username }}</li>
                 <li @click='clearStorage'>删除本地记录</li>
                 <li @click='logout'>退出登录</li>
               </ul>
