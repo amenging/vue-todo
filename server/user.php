@@ -24,7 +24,7 @@
 				$regReault = mysqli_query($conn, $reg);
 
 				if ($regReault) {
-					echo json_encode(array('code' => '0', 'message' => '注册成功'));
+					echo json_encode(array('code' => '0', 'message' => '注册成功，可以登录咯'));
 				}
 			}
 		} else if ($action == 'login') {

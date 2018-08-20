@@ -250,7 +250,6 @@ Vue.component('list-dialog', {
 
 // 登录框
 Vue.component('login-dialog', {
-  props: ['message', 'beforesend'],
   data () {
     return {
       username: '',
@@ -281,9 +280,7 @@ Vue.component('login-dialog', {
         <label></label>
         <button @click.stop.prevent='login' class='login'>登录</button>
         <button @click.stop.prevent='reg' class='reg'>注册</button>
-        <i v-if='beforesend' class='iconfont icon-loading load'></i>
       </div>
-      <div class='userMessage' v-if='message'>{{ message }}</div>
     </form>
   `,
   methods: {
@@ -542,8 +539,6 @@ const Todo = new Vue({
     showLogin:  0,
     userStatus: ['登录', '注册'],
     username: '',
-    userMessage: '',
-    beforeSend: false,
     warning: false,
     warningText: '你还什么都没有写呢٩(๑`^´๑)۶',
     waiting: false,
@@ -864,7 +859,6 @@ const Todo = new Vue({
         this.showWarning('你倒是输入密码呀')
         return
       }
-      this.beforeSend = true
 
       const action = data.action
 
@@ -874,12 +868,6 @@ const Todo = new Vue({
         }
       })
       .then(res => {
-        this.beforeSend = false
-        this.userMessage = res.data.message
-
-        setTimeout(() => {
-          this.userMessage = ''
-        }, 2000)
 
         if (res.data.code == 0) {
           axios.get(url + 'cookie.php', {
@@ -895,15 +883,17 @@ const Todo = new Vue({
           if (action == 'login') {
             this.showLogin = false
             this.username = data.name
+            Cloud.getAll(data.name)
+            .then(data => {
+              const a = data.arr
+              const todoData = {
+                todos: a,
+                u_id: data.u_id
+              }
+              this.todoData = todoData
+            })
           }
 
-          Cloud.getAll(data.name)
-          .then(data => {
-            const todoData = {
-              todos: data
-            }
-            this.todoData = todoData
-          })
         }
       })
       .catch(function (error) {
@@ -1028,7 +1018,6 @@ const Todo = new Vue({
         
       }
     })
- 
   }
 
 

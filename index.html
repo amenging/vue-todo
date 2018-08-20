@@ -59,9 +59,7 @@
       <todo-dialog @hidedialog='showLogin = false' v-if='showLogin'>
         <login-dialog 
           @login='userAction' 
-          @reg='userAction'
-          :beforesend='beforeSend'
-          :message='userMessage'>
+          @reg='userAction'>
         </login-dialog>
       </todo-dialog>
     </header>
