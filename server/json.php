@@ -14,7 +14,7 @@
 	  }
 		echo $name;
 	} else { // 生成文件返回链接
-		$name = rand();
+		$name = rand() . ".json";
 		$myfile = fopen($name, 'w') or die('go die');
 
 		$data = file_get_contents('php://input');

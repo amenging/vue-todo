@@ -378,14 +378,16 @@ var File = {
         a.setAttribute('download', 'TODO-' + n + '.json');
         a.click();
 
-        axios.post(url + 'json.php', {
-          params: {
-            name: res.data.filename,
-            action: 'del'
-          }
-        }).then(function (data) {
-          // console.log(data)
-        });
+        setTimeout(function () {
+          axios.post(url + 'json.php', {
+            params: {
+              name: res.data.filename,
+              action: 'del'
+            }
+          }).then(function (data) {
+            // console.log(data)
+          });
+        }, 2000);
         resolve(res.data);
       });
     });
