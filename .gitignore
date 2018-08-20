@@ -1,2 +1,7 @@
 server/remote.php
 server/*.json
+node_modules/
+package-lock.json
+package.json
+gulpfile.babel.js
+.babelrc

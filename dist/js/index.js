@@ -41,7 +41,10 @@ Vue.component('todo-title', {
     }
   },
   template: `
-    <li @click.self='handleListTitle(index)' :class='{"titleActive": index == title}'>
+    <li 
+      @click.self='handleListTitle(index)' 
+      @touchend='touchStart(index)'
+      :class='{"titleActive": index == title}'>
       <span @click.self='handleListTitle(index)'>{{todo.name}}</span>
       <span class='deleteList' @click='deleteList(index)'>
         <i class='iconfont icon-delete'></i>
@@ -60,6 +63,9 @@ Vue.component('todo-title', {
     },
     deleteList (index) {
       this.$emit('deletelist', index)
+    },
+    touchStart (index) {
+      this.$emit('touch', index)
     }
   }
 })
@@ -456,21 +462,24 @@ const Cloud = {
           arr[list_id.indexOf(ele.list_id)].lists.push(ele)
         })
 
-        var obj = localStorage.getItem(name)
+        const obj = localStorage.getItem(name)
+
+        let u_id = 'u_0'
 
         if (obj) {
-          var json = JSON.parse(obj)
-          var todos = json.todos
+          const json = JSON.parse(obj)
+          const todos = json.todos
           // if (json.username == name) {
-            for (var i in todos) {
+            for (let i in todos) {
               if (list_name.indexOf(todos[i].name) == -1) {
                 arr.push(todos[i])
               }
             }
           // }
+          if (json.u_id) u_id = json.u_id
         }
 
-        resolve({ arr, u_id: json.u_id })
+        resolve({ arr, u_id })
 
       })
       .catch(function (error) {
@@ -491,7 +500,7 @@ const File = {
         }
       })
       .then(res => {
-        var a = document.createElement('a')
+        const a = document.createElement('a')
         a.href = url + res.data.filename
 
         const date = new Date()
@@ -552,10 +561,10 @@ const Todo = new Vue({
   },
   methods: {
     changeStatus (id) {
-      var lists = this.todoData.todos[this.title].lists
+      const lists = this.todoData.todos[this.title].lists
 
-      var item
-      for (var i in lists) {
+      let item
+      for (let i in lists) {
         if (lists[i].items_id == id) {
           item = lists[i]
         }
@@ -663,10 +672,10 @@ const Todo = new Vue({
     },
     // 编辑事项
     editItem (id) {
-      var lists = this.todoData.todos[this.title].lists
+      const lists = this.todoData.todos[this.title].lists
 
-      var item, index
-      for (var i in lists) {
+      let item, index
+      for (let i in lists) {
         if (lists[i].items_id == id) {
           item = lists[i]
           index = i
@@ -681,10 +690,10 @@ const Todo = new Vue({
     },
     // 删除事项
     deleteItem (id) {
-      var lists = this.todoData.todos[this.title].lists
+      const lists = this.todoData.todos[this.title].lists
 
-      var item, index
-      for (var i in lists) {
+      let item, index
+      for (let i in lists) {
         if (lists[i].items_id == id) {
           item = lists[i]
           index = i
@@ -714,12 +723,12 @@ const Todo = new Vue({
 
     // 编辑事项
     confirmEdit (data) {
-      var id = data.index
+      const id = data.index
 
-      var lists = this.todoData.todos[this.title].lists
+      const lists = this.todoData.todos[this.title].lists
 
-      var item, index
-      for (var i in lists) {
+      let item, index
+      for (let i in lists) {
         if (lists[i].items_id == id) {
           item = lists[i]
           index = i
@@ -918,7 +927,7 @@ const Todo = new Vue({
 
           Cloud.getAll(data.name)
           .then(data => {
-            todoData = {
+            const todoData = {
               todos: data
             }
             this.todoData = todoData
@@ -989,6 +998,13 @@ const Todo = new Vue({
       setTimeout(() => {
         this.tipsData.show = false
       }, 1000)
+    },
+
+    touchStart (i) {
+      this.title = i
+      setTimeout(() => {
+        this.showMenu = false
+      }, 100)
     }
   },
   watch: {
@@ -999,8 +1015,8 @@ const Todo = new Vue({
       if (this.chooseTab == 0) {
         return this.todoData.todos
       } else {
-        var todoList = JSON.parse(JSON.stringify(this.todoData.todos))
-        var arr = todoList[this.title].lists.filter(ele => {
+        const todoList = JSON.parse(JSON.stringify(this.todoData.todos))
+        const arr = todoList[this.title].lists.filter(ele => {
           return (ele.status/1 + 1) == this.chooseTab
         })
         todoList[this.title].lists = arr
@@ -1022,12 +1038,13 @@ const Todo = new Vue({
         Cloud.getAll(res.data)
         .then(data => {
           this.waiting = false
+          const a = data.arr
           todoData = {
-            todos: data.arr,
+            todos: a,
             u_id: data.u_id
           }
 
-          this.u_id = data.u_id || 'u_0'
+          this.u_id = data.u_id
           this.todoData = todoData
         })
         

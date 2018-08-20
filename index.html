@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
   <title>TODO</title>
-  <link rel="stylesheet" type="text/css" href="font/iconfont.css">
-  <link rel="stylesheet" type="text/css" href="./css/index.css">
-  <link rel="shortcut icon" type="image/x-icon" href="ico.ico">
-  <script type="text/javascript" src="./js/vue.js"></script>
+  <link rel="stylesheet" type="text/css" href="./dist/font/iconfont.css">
+  <link rel="stylesheet" type="text/css" href="./dist/css/index.css">
+  <link rel="shortcut icon" type="image/x-icon" href="./dist/imgs/ico.ico">
+  <script type="text/javascript" src="./dist/js/vue.min.js"></script>
 </head>
 <body>
   <div id="app" v-cloak>
@@ -105,6 +105,7 @@
             :todo='todo'
             :title='title'
             :index='index'
+            @touch='touchStart'
             @handleListTitle='handleListTitle'
             @editlist='editList'
             @deletelist='deleteList'>
@@ -172,8 +173,9 @@
       </div>
     </footer>
   </div>
-
-  <script type="text/javascript" src="./js/axios.min.js"></script>
-  <script type="text/javascript" src="./js/index.js"></script>
+  
+  <script type="text/javascript" src="./dist/js/axios.min.js"></script>
+  <!-- <script type="text/javascript" src="./dist/js/index.js"></script> -->
+  <script type="text/javascript" src="./dist/js/index.babel.js"></script>
 </body>
 </html>
