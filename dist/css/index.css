@@ -89,6 +89,16 @@ header {
 }
 .login, .username {
   cursor: pointer;
+  position: relative;
+}
+.arrow {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-bottom: 1px solid #fff;
+  border-right: 1px solid #fff;
+  transform: rotate(45deg) translateY(-2px);
+  margin-left: 5px;
 }
 .todo-app {
   display: flex;
@@ -447,7 +457,8 @@ footer {
   top: -10px;
   border-top: none;
   /* box-shadow: 0 0 10px #ccc; */
-  left: 18px;
+  /*left: 18px;*/
+  right: 8px;
 }
 .userMenu {
   display: none;
@@ -457,9 +468,9 @@ footer {
   background: #fcfcfc;
   color: #000;
   font-size: .9em;
-  /* padding: 10px; */
-  /* border-radius: 5px; */
   box-shadow: 0 0 10px #ccc;
+  width: 119px;
+  right: -14px;
 }
 .userMenu li {
   list-style: none;
@@ -617,8 +628,8 @@ footer {
     display: block;
   }
   .userMenu {
-    width: 119px;
-    right: 4px;
+    right: -14px;
+    top: 50px;
   }
   .triangle {
     left: unset;

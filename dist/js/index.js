@@ -103,6 +103,7 @@ Vue.component('list', {
     <div class='todo-list' v-if='count == title'>
       <slot></slot>
       <ul>
+        <div v-if='lists.length == 0' class='nothing'>啥都木有哦(*/ω＼*)</div>
         <input
           v-if='choosetab == 0'
           v-model.trim='val'
@@ -135,7 +136,6 @@ Vue.component('list', {
             </span>
           </div>
         </li>
-        <div v-if='lists.length == 0' class='nothing'>啥都木有哦(*/ω＼*)</div>
       </ul>
     </div>
   `,
