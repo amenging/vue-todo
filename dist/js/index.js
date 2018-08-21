@@ -111,13 +111,6 @@ Vue.component('list', {
           class='addNewItem'
           placeholder='输入后enter新增'></input>
         <li v-for='(list, index) in lists' :class='{ "checked": list.status == 1 }'>
-          <input
-            class='editInput'
-            v-if='editIndex == list.items_id && list.status == 0'
-            v-model.trim='editValue'
-            v-focus='editIndex == list.items_id'
-            @blur='confirmEdit(list.items_id)'
-            @keyup.enter='confirmEdit(list.items_id)'/>
           <div class='checkRadio'>
             <i
               @click='click(list.items_id)' 
@@ -135,6 +128,13 @@ Vue.component('list', {
               <i class='iconfont icon-delete'></i>
             </span>
           </div>
+          <input
+            class='editInput'
+            v-if='editIndex == list.items_id && list.status == 0'
+            v-model.trim='editValue'
+            v-focus='editIndex == list.items_id'
+            @blur='confirmEdit(list.items_id)'
+            @keyup.enter='confirmEdit(list.items_id)'/>
         </li>
       </ul>
     </div>
