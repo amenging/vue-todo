@@ -568,15 +568,18 @@ const Todo = new Vue({
         }
       }
 
+      const newStatus = Math.abs(item.status - 1)
+
       if (this.todos[this.title].online) {
-        Cloud.changeStatus(item.status, item.items_id)
+        Cloud.changeStatus(newStatus, item.items_id)
         .then(data => {
           if (data.code == 0) {
-            item.status = Math.abs(item.status - 1)
+            item.status = newStatus
           }
+          this.saveData()
         })
       } else {
-        item.status = Math.abs(item.status - 1)
+        item.status = newStatus
       }
 
       this.saveData()
@@ -619,6 +622,8 @@ const Todo = new Vue({
             if (this.title == i && !this.todoData.todos[i]) {
               this.title = i - 1
             }
+
+            this.saveData()
           }
         })
       } else {
@@ -629,9 +634,11 @@ const Todo = new Vue({
         if (this.title == i && !this.todoData.todos[i]) {
           this.title = i - 1
         }
+
+        this.saveData()
       }
 
-      this.saveData()
+      
     },
 
     // 事项操作
@@ -648,7 +655,7 @@ const Todo = new Vue({
       this.todoData.u_id = u_id
       
 
-      this.saveData()
+      
       const list = this.todos[this.title]
       if (list.online) {
         Cloud.addNewItem(list.list_id, [{
@@ -662,6 +669,7 @@ const Todo = new Vue({
               status: 0,
               items_id: data.items_id
             })
+            this.saveData()
           }
         })
       } else {
@@ -670,6 +678,7 @@ const Todo = new Vue({
           status: 0,
           items_id: u_id
         })
+        this.saveData()
         this.showWarning('新增本地清单事项成功')
       }
     },
@@ -689,7 +698,7 @@ const Todo = new Vue({
       // this.editIndex = index
       this.editIndex = item.items_id
 
-      this.saveData()
+      // this.saveData()
     },
     // 删除事项
     deleteItem (id) {
@@ -710,13 +719,14 @@ const Todo = new Vue({
         .then(data => {
           if (data.code == 0) {
             this.todoData.todos[this.title].lists.splice(index, 1)
+            this.saveData()
           }
         })
       } else {
         this.todoData.todos[this.title].lists.splice(index, 1)
+        this.saveData()
       }
 
-      this.saveData()
     },
 
     // 编辑事项
@@ -746,10 +756,12 @@ const Todo = new Vue({
         .then(res => {
           if (res.code == 0) {
             item.content = data.val
+            this.saveData()
           }
         })
       } else {
         item.content = data.val
+        this.saveData()
       }
     },
 
@@ -776,6 +788,7 @@ const Todo = new Vue({
             if (res.code == 0) {
               this.todoData.todos[this.title].name = data.name
               this.$set(this.todoData.todos[this.title], 'online', data.online)
+              this.saveData()
             }
           })
         } else if (!beforeOnline && data.online){
@@ -789,12 +802,14 @@ const Todo = new Vue({
 
               Cloud.addNewItem(res.list_id, lists)
               this.todoData.todos[this.title].online = data.online
+              this.saveData()
             }
           })
         } else if (beforeOnline && data.online) {
           Cloud.submitListEdit(data.name, this.todos[this.title].list_id)
           .then(res => {
             this.todoData.todos[this.title].name = data.name
+            this.saveData()
           })
         } else {
           this.todoData.todos[this.title].name = data.name
@@ -812,6 +827,7 @@ const Todo = new Vue({
                 list_id: res.list_id
               })
               this.title = this.todoData.todos.length - 1
+              this.saveData()
             }
           })
         } else {
@@ -824,9 +840,10 @@ const Todo = new Vue({
           this.showWarning('新增本地清单成功')
         }
       }
+
+      this.saveData()
       this.listData = ''
       this.showDialog = false
-      this.saveData()
     },
     tabChange (i) {
       this.chooseTab = i
