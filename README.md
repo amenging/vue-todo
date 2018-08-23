@@ -1,6 +1,7 @@
 [在线地址](https://www.amenging.xyz/vue-todo)
 
-预览图：
+### 预览图
+
 ![电脑版](http://wx2.sinaimg.cn/mw690/005QPjztgy1fujr7obqbdj310w0jrq3a.jpg)
 ![手机版](http://wx3.sinaimg.cn/mw690/005QPjztgy1fujr99aci8j308k0f8wef.jpg)
 
