@@ -1,15 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
-  <title>TODO</title>
-  <link rel="stylesheet" type="text/css" href="./dist/font/iconfont.css">
-  <link rel="stylesheet" type="text/css" href="./dist/css/index.css">
-  <link rel="shortcut icon" type="image/x-icon" href="./dist/imgs/ico.ico">
-  <script type="text/javascript" src="./dist/js/vue.js"></script>
-  <!-- <script type="text/javascript" src="./dist/js/vue.min.js"></script> -->
-</head>
+<?php include 'header.php' ?>
 <body>
   <div id="app" v-cloak>
     <!-- 头部 -->
@@ -173,9 +162,4 @@
       </div>
     </footer>
   </div>
-  
-  <script type="text/javascript" src="./dist/js/axios.min.js"></script>
-  <!-- <script type="text/javascript" src="./dist/js/index.js"></script> -->
-  <script type="text/javascript" src="./dist/js/index.babel.js"></script>
-</body>
-</html>
+<?php include 'footer.php' ?>
