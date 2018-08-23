@@ -617,9 +617,9 @@ const Todo = new Vue({
           if (data.code == 0) {
             this.todoData.todos.splice(i, 1)
 
-            if (this.title >= this.todos.length) this.title = this.title - 1
+            if (this.title > this.todos.length) this.title = this.title - 1 
 
-            if (this.title == i && !this.todoData.todos[i]) {
+            if (this.title == i && this.todoData.todos[i - 1]) {
               this.title = i - 1
             }
 
@@ -629,9 +629,9 @@ const Todo = new Vue({
       } else {
         this.todoData.todos.splice(i, 1)
         
-        if (this.title >= this.todos.length) this.title = this.title - 1
+        if (this.title > this.todos.length) this.title = this.title - 1
 
-        if (this.title == i && !this.todoData.todos[i]) {
+        if (this.title == i && this.todoData.todos[i - 1]) {
           this.title = i - 1
         }
 

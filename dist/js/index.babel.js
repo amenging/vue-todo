@@ -83,7 +83,7 @@ Vue.component('list', {
     }
   },
   // v-if='lists.length > 0'
-  template: '\n    <div class=\'todo-list\' v-if=\'count == title\'>\n      <slot></slot>\n      <ul>\n        <div v-if=\'lists.length == 0\' class=\'nothing\'>\u5565\u90FD\u6728\u6709\u54E6(*/\u03C9\uFF3C*)</div>\n        <input\n          v-if=\'choosetab == 0\'\n          v-model.trim=\'val\'\n          @keyup.enter=\'addNewItem\'\n          class=\'addNewItem\'\n          placeholder=\'\u8F93\u5165\u540Eenter\u65B0\u589E\'></input>\n        <li v-for=\'(list, index) in lists\' :class=\'{ "checked": list.status == 1 }\'>\n          <div class=\'checkRadio\'>\n            <i\n              @click=\'click(list.items_id)\' \n              :class=\'["iconfont", list.status == 1 ? check : uncheck]\'></i>\n          </div>\n          <div>\n            <span\n              @click=\'editItem(list.items_id)\'\n              class=\'listContent\'>{{ list.content }}</span>\n          </div>\n          <div>\n            <span\n              @click=\'deleteItem(list.items_id)\'\n              class=\'deleteItem\'>\n              <i class=\'iconfont icon-delete\'></i>\n            </span>\n          </div>\n          <input\n            class=\'editInput\'\n            v-if=\'editIndex == list.items_id && list.status == 0\'\n            v-model.trim=\'editValue\'\n            v-focus=\'editIndex == list.items_id\'\n            @blur=\'confirmEdit(list.items_id)\'\n            @keyup.enter=\'confirmEdit(list.items_id)\'/>\n        </li>\n      </ul>\n    </div>\n  ',
+  template: '\n    <div class=\'todo-list\' v-if=\'count == title\'>\n      <slot></slot>\n      <ul>\n        <input\n          v-if=\'choosetab == 0\'\n          v-model.trim=\'val\'\n          @keyup.enter=\'addNewItem\'\n          class=\'addNewItem\'\n          placeholder=\'\u8F93\u5165\u540Eenter\u65B0\u589E\'></input>\n        <li v-for=\'(list, index) in lists\' :class=\'{ "checked": list.status == 1 }\'>\n          <input\n            class=\'editInput\'\n            v-if=\'editIndex == list.items_id && list.status == 0\'\n            v-model.trim=\'editValue\'\n            v-focus=\'editIndex == list.items_id\'\n            @blur=\'confirmEdit(list.items_id)\'\n            @keyup.enter=\'confirmEdit(list.items_id)\'/>\n          <div class=\'checkRadio\'>\n            <i\n              @click=\'click(list.items_id)\' \n              :class=\'["iconfont", list.status == 1 ? check : uncheck]\'></i>\n          </div>\n          <div>\n            <span\n              @click=\'editItem(list.items_id)\'\n              class=\'listContent\'>{{ list.content }}</span>\n          </div>\n          <div>\n            <span\n              @click=\'deleteItem(list.items_id)\'\n              class=\'deleteItem\'>\n              <i class=\'iconfont icon-delete\'></i>\n            </span>\n          </div>\n        </li>\n        <div v-if=\'lists.length == 0\' class=\'nothing\'>\u5565\u90FD\u6728\u6709\u54E6(*/\u03C9\uFF3C*)</div>\n      </ul>\n    </div>\n  ',
   data: function data() {
     return {
       choose: [],
@@ -167,6 +167,7 @@ Vue.component('list-dialog', {
 
 // 登录框
 Vue.component('login-dialog', {
+  props: ['message', 'beforesend'],
   data: function data() {
     return {
       username: '',
@@ -174,7 +175,7 @@ Vue.component('login-dialog', {
     };
   },
 
-  template: '\n    <form class=\'dialog-content login-form\'>\n      <div class=\'form-control\'>\n        <label>\u7528\u6237\u540D</label>\n        <input\n          autocomplete=\'username\'\n          placeholder=\'\u7528\u6237\u540D\uFF0810\u4E2A\u5B57\u7B26\u4EE5\u5185\uFF09\'\n          v-focus=\'true\'\n          maxlength=\'10\' \n          v-model.trim=\'username\' />\n      </div>\n      <div class=\'form-control\'>\n        <label>\u5BC6\u7801</label>\n        <input\n          type=\'password\'\n          autocomplete=\'current-password\'\n          placeholder=\'\u5BC6\u7801\uFF0812\u4E2A\u5B57\u7B26\u4EE5\u5185\uFF09\'\n          maxlength=\'12\' \n          v-model.trim=\'password\' />\n      </div>\n      <div class=\'form-control\'>\n        <label></label>\n        <button @click.stop.prevent=\'login\' class=\'login\'>\u767B\u5F55</button>\n        <button @click.stop.prevent=\'reg\' class=\'reg\'>\u6CE8\u518C</button>\n      </div>\n    </form>\n  ',
+  template: '\n    <form class=\'dialog-content login-form\'>\n      <div class=\'form-control\'>\n        <label>\u7528\u6237\u540D</label>\n        <input\n          autocomplete=\'username\'\n          placeholder=\'\u7528\u6237\u540D\uFF0810\u4E2A\u5B57\u7B26\u4EE5\u5185\uFF09\'\n          v-focus=\'true\'\n          maxlength=\'10\' \n          v-model.trim=\'username\' />\n      </div>\n      <div class=\'form-control\'>\n        <label>\u5BC6\u7801</label>\n        <input\n          type=\'password\'\n          autocomplete=\'current-password\'\n          placeholder=\'\u5BC6\u7801\uFF0812\u4E2A\u5B57\u7B26\u4EE5\u5185\uFF09\'\n          maxlength=\'12\' \n          v-model.trim=\'password\' />\n      </div>\n      <div class=\'form-control\'>\n        <label></label>\n        <button @click.stop.prevent=\'login\' class=\'login\'>\u767B\u5F55</button>\n        <button @click.stop.prevent=\'reg\' class=\'reg\'>\u6CE8\u518C</button>\n        <i v-if=\'beforesend\' class=\'iconfont icon-loading load\'></i>\n      </div>\n      <div class=\'userMessage\' v-if=\'message\'>{{ message }}</div>\n    </form>\n  ',
   methods: {
     login: function login() {
       this.$emit('login', {
@@ -221,7 +222,6 @@ var Cloud = {
           action: 'edit'
         }
       }).then(function (res) {
-        // console.log(res)
         resolve(res.data);
       });
     });
@@ -260,7 +260,6 @@ var Cloud = {
           action: 'add'
         }
       }).then(function (res) {
-        console.log(res);
         resolve(res.data);
       });
     });
@@ -310,7 +309,6 @@ var Cloud = {
           name: name
         }
       }).then(function (res) {
-        // console.log(res)
         var arr = [];
         var lists = res.data.lists || [],
             items = res.data.items || [];
@@ -354,7 +352,6 @@ var Cloud = {
 
         resolve({ arr: arr, u_id: u_id });
       }).catch(function (error) {
-        console.log(error);
       });
     });
   }
@@ -378,17 +375,13 @@ var File = {
         a.setAttribute('download', 'TODO-' + n + '.json');
         a.click();
 
-        setTimeout(function () {
-          axios.post(url + 'json.php', {
-            params: {
-              name: res.data.filename,
-              action: 'del'
-            }
-          }).then(function (data) {
-            // console.log(data)
-          });
-        }, 2000);
-
+        axios.post(url + 'json.php', {
+          params: {
+            name: res.data.filename,
+            action: 'del'
+          }
+        }).then(function (data) {
+        });
         resolve(res.data);
       });
     });
@@ -412,6 +405,8 @@ var Todo = new Vue({
     showLogin: 0,
     userStatus: ['登录', '注册'],
     username: '',
+    userMessage: '',
+    beforeSend: false,
     warning: false,
     warningText: '你还什么都没有写呢٩(๑`^´๑)۶',
     waiting: false,
@@ -429,8 +424,6 @@ var Todo = new Vue({
   },
   methods: {
     changeStatus: function changeStatus(id) {
-      var _this2 = this;
-
       var lists = this.todoData.todos[this.title].lists;
 
       var item = void 0;
@@ -440,17 +433,14 @@ var Todo = new Vue({
         }
       }
 
-      var newStatus = Math.abs(item.status - 1);
-
       if (this.todos[this.title].online) {
-        Cloud.changeStatus(newStatus, item.items_id).then(function (data) {
+        Cloud.changeStatus(item.status, item.items_id).then(function (data) {
           if (data.code == 0) {
-            item.status = newStatus;
+            item.status = Math.abs(item.status - 1);
           }
-          _this2.saveData();
         });
       } else {
-        item.status = newStatus;
+        item.status = Math.abs(item.status - 1);
       }
 
       this.saveData();
@@ -483,7 +473,7 @@ var Todo = new Vue({
 
     //删除清单
     deleteList: function deleteList(i) {
-      var _this3 = this;
+      var _this2 = this;
 
       var list_id = this.todos[i].list_id,
           online = this.todos[i].online;
@@ -491,15 +481,13 @@ var Todo = new Vue({
       if (online) {
         Cloud.deleteList(list_id).then(function (data) {
           if (data.code == 0) {
-            _this3.todoData.todos.splice(i, 1);
+            _this2.todoData.todos.splice(i, 1);
 
-            if (_this3.title >= _this3.todos.length) _this3.title = _this3.title - 1;
+            if (_this2.title >= _this2.todos.length) _this2.title = _this2.title - 1;
 
-            if (_this3.title == i && !_this3.todoData.todos[i]) {
-              _this3.title = i - 1;
+            if (_this2.title == i && !_this2.todoData.todos[i]) {
+              _this2.title = i - 1;
             }
-
-            _this3.saveData();
           }
         });
       } else {
@@ -510,16 +498,16 @@ var Todo = new Vue({
         if (this.title == i && !this.todoData.todos[i]) {
           this.title = i - 1;
         }
-
-        this.saveData();
       }
+
+      this.saveData();
     },
 
 
     // 事项操作
     // 新增事项
     addNewItem: function addNewItem(val) {
-      var _this4 = this;
+      var _this3 = this;
 
       if (val == '') {
         this.showWarning();
@@ -531,6 +519,7 @@ var Todo = new Vue({
 
       this.todoData.u_id = u_id;
 
+      this.saveData();
       var list = this.todos[this.title];
       if (list.online) {
         Cloud.addNewItem(list.list_id, [{
@@ -538,12 +527,11 @@ var Todo = new Vue({
           status: 0
         }]).then(function (data) {
           if (data.code == 0) {
-            _this4.todoData.todos[_this4.title].lists.unshift({
+            _this3.todoData.todos[_this3.title].lists.unshift({
               content: val,
               status: 0,
               items_id: data.items_id
             });
-            _this4.saveData();
           }
         });
       } else {
@@ -552,7 +540,6 @@ var Todo = new Vue({
           status: 0,
           items_id: u_id
         });
-        this.saveData();
         this.showWarning('新增本地清单事项成功');
       }
     },
@@ -574,12 +561,12 @@ var Todo = new Vue({
       // this.editIndex = index
       this.editIndex = item.items_id;
 
-      // this.saveData()
+      this.saveData();
     },
 
     // 删除事项
     deleteItem: function deleteItem(id) {
-      var _this5 = this;
+      var _this4 = this;
 
       var lists = this.todoData.todos[this.title].lists;
 
@@ -597,21 +584,19 @@ var Todo = new Vue({
       if (this.todos[this.title].online) {
         Cloud.deleteItem(items_id).then(function (data) {
           if (data.code == 0) {
-            _this5.todoData.todos[_this5.title].lists.splice(index, 1);
-            _this5.saveData();
+            _this4.todoData.todos[_this4.title].lists.splice(index, 1);
           }
         });
       } else {
         this.todoData.todos[this.title].lists.splice(index, 1);
-        this.saveData();
       }
+
+      this.saveData();
     },
 
 
     // 编辑事项
     confirmEdit: function confirmEdit(data) {
-      var _this6 = this;
-
       var id = data.index;
 
       var lists = this.todoData.todos[this.title].lists;
@@ -637,12 +622,10 @@ var Todo = new Vue({
         Cloud.confirmEdit(data.val, item.items_id).then(function (res) {
           if (res.code == 0) {
             item.content = data.val;
-            _this6.saveData();
           }
         });
       } else {
         item.content = data.val;
-        this.saveData();
       }
     },
     cancel: function cancel() {
@@ -653,7 +636,7 @@ var Todo = new Vue({
 
     // 新增和编辑清单
     submitList: function submitList(data) {
-      var _this7 = this;
+      var _this5 = this;
 
       if (data.name == '') {
         this.showWarning();
@@ -668,28 +651,25 @@ var Todo = new Vue({
           // 从线上删除
           Cloud.deleteList(this.todos[this.title].list_id).then(function (res) {
             if (res.code == 0) {
-              _this7.todoData.todos[_this7.title].name = data.name;
-              _this7.$set(_this7.todoData.todos[_this7.title], 'online', data.online);
-              _this7.saveData();
+              _this5.todoData.todos[_this5.title].name = data.name;
+              _this5.$set(_this5.todoData.todos[_this5.title], 'online', data.online);
             }
           });
         } else if (!beforeOnline && data.online) {
           // 从本地添加到线上
           Cloud.addNewList(this.username, this.todos[this.title].name).then(function (res) {
             if (res.code == 0) {
-              _this7.todoData.todos[_this7.title].name = data.name;
-              _this7.todos[_this7.title].list_id = res.list_id;
-              var lists = _this7.todoData.todos[_this7.title].lists;
+              _this5.todoData.todos[_this5.title].name = data.name;
+              _this5.todos[_this5.title].list_id = res.list_id;
+              var lists = _this5.todoData.todos[_this5.title].lists;
 
               Cloud.addNewItem(res.list_id, lists);
-              _this7.todoData.todos[_this7.title].online = data.online;
-              _this7.saveData();
+              _this5.todoData.todos[_this5.title].online = data.online;
             }
           });
         } else if (beforeOnline && data.online) {
           Cloud.submitListEdit(data.name, this.todos[this.title].list_id).then(function (res) {
-            _this7.todoData.todos[_this7.title].name = data.name;
-            _this7.saveData();
+            _this5.todoData.todos[_this5.title].name = data.name;
           });
         } else {
           this.todoData.todos[this.title].name = data.name;
@@ -700,14 +680,13 @@ var Todo = new Vue({
         if (data.online) {
           Cloud.addNewList(this.username, data.name).then(function (res) {
             if (res.code == 0) {
-              _this7.todoData.todos.push({
+              _this5.todoData.todos.push({
                 name: data.name,
                 online: data.online,
                 lists: [],
                 list_id: res.list_id
               });
-              _this7.title = _this7.todoData.todos.length - 1;
-              _this7.saveData();
+              _this5.title = _this5.todoData.todos.length - 1;
             }
           });
         } else {
@@ -720,10 +699,9 @@ var Todo = new Vue({
           this.showWarning('新增本地清单成功');
         }
       }
-
-      this.saveData();
       this.listData = '';
       this.showDialog = false;
+      this.saveData();
     },
     tabChange: function tabChange(i) {
       this.chooseTab = i;
@@ -736,20 +714,20 @@ var Todo = new Vue({
       localStorage.setItem(this.username, JSON.stringify(this.todoData));
     },
     clearStorage: function clearStorage() {
-      var _this8 = this;
+      var _this6 = this;
 
       localStorage.removeItem(this.username);
 
       Cloud.getAll(this.username).then(function (data) {
-        _this8.todoData.todos = data.arr;
-        _this8.title = 0;
+        _this6.todoData.todos = data;
+        _this6.title = 0;
       });
     },
 
 
     // 登录注册
     userAction: function userAction(data) {
-      var _this9 = this;
+      var _this7 = this;
 
       if (data.name == '') {
         this.showWarning('你倒是写个名字呀');
@@ -759,12 +737,19 @@ var Todo = new Vue({
         this.showWarning('你倒是输入密码呀');
         return;
       }
+      this.beforeSend = true;
 
       var action = data.action;
 
       axios.post(url + 'user.php', {
         params: _extends({}, data)
       }).then(function (res) {
+        _this7.beforeSend = false;
+        _this7.userMessage = res.data.message;
+
+        setTimeout(function () {
+          _this7.userMessage = '';
+        }, 2000);
 
         if (res.data.code == 0) {
           axios.get(url + 'cookie.php', {
@@ -773,47 +758,43 @@ var Todo = new Vue({
               username: data.name
             }
           }).then(function (res) {
-            // console.log(res)
           });
 
           if (action == 'login') {
-            _this9.showLogin = false;
-            _this9.username = data.name;
-            Cloud.getAll(data.name).then(function (data) {
-              var a = data.arr;
-              var todoData = {
-                todos: a,
-                u_id: data.u_id
-              };
-              _this9.todoData = todoData;
-            });
+            _this7.showLogin = false;
+            _this7.username = data.name;
           }
+
+          Cloud.getAll(data.name).then(function (data) {
+            var todoData = {
+              todos: data
+            };
+            _this7.todoData = todoData;
+          });
         }
       }).catch(function (error) {
-        console.log(error);
       });
     },
     logout: function logout() {
-      var _this10 = this;
+      var _this8 = this;
 
       axios.get(url + 'cookie.php', {
         params: {
           action: 'logout'
         }
       }).then(function (res) {
-        // console.log(res)
-        _this10.username = '';
-        _this10.todoData.todos = [];
+        _this8.username = '';
+        _this8.todoData.todos = [];
       });
     },
     showWarning: function showWarning(t) {
-      var _this11 = this;
+      var _this9 = this;
 
       this.warningText = t || '你还什么都没有写呢٩(๑`^´๑)۶';
 
       this.warning = true;
       setTimeout(function () {
-        _this11.warning = false;
+        _this9.warning = false;
       }, 1000);
     },
     exportFile: function exportFile() {
@@ -837,13 +818,12 @@ var Todo = new Vue({
       var reader = new FileReader();
       reader.readAsText(file, 'uft-8');
       reader.onload = function (e) {
-        console.log(e.target.result);
         _this.todoData.todos = JSON.parse(e.target.result);
         _this.saveData();
       };
     },
     showTips: function showTips(txt, e) {
-      var _this12 = this;
+      var _this10 = this;
 
       this.tipsData = {
         words: txt,
@@ -854,29 +834,29 @@ var Todo = new Vue({
         show: true
       };
       setTimeout(function () {
-        _this12.tipsData.show = false;
+        _this10.tipsData.show = false;
       }, 1000);
     },
     touchStart: function touchStart(i) {
-      var _this13 = this;
+      var _this11 = this;
 
       this.title = i;
       setTimeout(function () {
-        _this13.showMenu = false;
+        _this11.showMenu = false;
       }, 100);
     }
   },
   watch: {},
   computed: {
     todos: function todos() {
-      var _this14 = this;
+      var _this12 = this;
 
       if (this.chooseTab == 0) {
         return this.todoData.todos;
       } else {
         var todoList = JSON.parse(JSON.stringify(this.todoData.todos));
         var arr = todoList[this.title].lists.filter(function (ele) {
-          return ele.status / 1 + 1 == _this14.chooseTab;
+          return ele.status / 1 + 1 == _this12.chooseTab;
         });
         todoList[this.title].lists = arr;
         return todoList;
@@ -885,7 +865,7 @@ var Todo = new Vue({
   },
   mouted: function mouted() {},
   created: function created() {
-    var _this15 = this;
+    var _this13 = this;
 
     var todoData = void 0;
 
@@ -895,9 +875,9 @@ var Todo = new Vue({
       }
     }).then(function (res) {
       if (res.data) {
-        _this15.username = res.data.name;
+        _this13.username = res.data.name;
 
-        _this15.waiting = true;
+        _this13.waiting = true;
         Cloud.getAll(res.data.name).then(function (data) {
           var a = data.arr;
           todoData = {
@@ -905,8 +885,8 @@ var Todo = new Vue({
             u_id: data.u_id
           };
 
-          _this15.u_id = data.u_id;
-          _this15.todoData = todoData;
+          _this13.u_id = data.u_id;
+          _this13.todoData = todoData;
         });
       }
     });
