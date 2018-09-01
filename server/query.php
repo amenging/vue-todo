@@ -12,7 +12,7 @@
 		$row = mysqli_query($conn, $getID) -> fetch_assoc();
 		$id = $row['user_id'];
 
-		$getList = "select * from lists where user_id = '" . $id . "'";
+		$getList = "select * from lists where user_id = '" . $id . "' order by create_time";
 		$list = mysqli_query($conn, $getList);
 
 		if (mysqli_num_rows($list) > 0) {
@@ -23,7 +23,7 @@
 			$items = array();
 			
 			for ($i = 0; $i < count($arr1); $i ++) {
-				$getItem = "select * from items where list_id = '" . $arr1[$i]['list_id'] . "'";
+				$getItem = "select * from items where list_id = '" . $arr1[$i]['list_id'] . "' order by create_time desc";
 				$item = mysqli_query($conn, $getItem);
 
 				while ($row = $item -> fetch_assoc()) {

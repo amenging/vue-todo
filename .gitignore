@@ -8,3 +8,4 @@ gulpfile.babel.js
 dist/js/index2.js
 index2.html
 dist/js/index.babel.js
+src/
