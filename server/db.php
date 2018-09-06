@@ -12,4 +12,6 @@
 		die('连接错误' . mysqli_error($conn));
 	}
 
+	mysqli_set_charset($conn, "utf8");
+
 ?>

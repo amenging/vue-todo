@@ -1,4 +1,4 @@
-[在线地址](https://www.amenging.xyz/vue-todo)
+[在线地址](http://ameng.gz01.bdysite.com/vue-todo/)
 
 ### 预览图
 
