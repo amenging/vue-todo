@@ -205,6 +205,7 @@ header {
   display: inline-block;
   margin-left: 20px;
   cursor: text;
+  word-break: break-all;
 }
 .editInput {
   position: absolute;

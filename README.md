@@ -23,8 +23,10 @@
 注意事项：
 - 导出到本地的清单再导入时默认不同步云端
 
-运行环境：
-php 5.6.27
-mysql 5.5.53
+----
+
+### 运行环境：
+- php 5.6.27
+- mysql 5.5.53
 
 sql文件：server/nletmaRpDsbEUdbDapsm.sql
