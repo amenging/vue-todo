@@ -113,11 +113,21 @@ header {
   padding: 10px;
   transition: .3s;
   margin: 1px auto;
+  position: relative;
 }
 .todo-title, .todo-list {
   box-shadow: 0 0 18px rgba(228, 228, 228, 0.38);
   border-radius: 4px;
   background: #fcfcfc;
+}
+.titleActive::before {
+  content: '';
+  width: 1px;
+  position: absolute;
+  height: 100%;
+  background: #02b7af;
+  left: 0;
+  top: 0;
 }
 .todo-title-header {
   height: 45px;
@@ -155,9 +165,6 @@ header {
 }
 .todo-list li, .todo-list li i {
   font-size: 20px;
-}
-.titleActive {
-  border-left: 1px solid #02b7af;
 }
 .checked .listContent, .checked .checkRadio i {
   color: #ccc;
