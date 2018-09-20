@@ -469,6 +469,7 @@ const Cloud = {
           // if (json.username == name) {
             for (let i in todos) {
               if (list_name.indexOf(todos[i].name) == -1) {
+                todos[i].online = false
                 arr.push(todos[i])
               }
             }
