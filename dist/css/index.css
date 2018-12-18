@@ -35,6 +35,11 @@ body::-webkit-scrollbar-thumb {
 body::-webkit-scrollbar-thumb:window-inactive {
   background: rgba(0, 0, 0, .2);
 }
+/* 设置滚动条的样式 */
+.todo-title::-webkit-scrollbar {
+  width: 0;
+}
+
 header {
   background: #444c5f;
   background: linear-gradient(to right, #02AAB0, #00cdac);
@@ -144,6 +149,7 @@ header {
 }
 .todo-title ul {
   overflow: hidden;
+  padding-bottom: 30px;
 }
 .todo-list {
   width: 80%;
@@ -624,11 +630,12 @@ footer {
     top: 0;
     background: #fff;
     height: 100%;
-    width: 45%;
+    /*width: 45%;*/
     /*left: 0;*/
     z-index: 3;
     border-radius: 0;
     transition: .3s;
+    overflow-y: scroll;
   }
   .username-text {
     display: none;
@@ -648,11 +655,11 @@ footer {
     font-size: unset;
   }
   .buttonMenu {
-   position: absolute;
+   position: fixed;
    bottom: 0;
    display: flex;
    justify-content: space-between;
-   width: 100%;
+   width: 225px;
   }
   .buttonMenu button, .buttonMenu label{
    display: block;
