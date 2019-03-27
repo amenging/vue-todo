@@ -1,6 +1,15 @@
-export const state = () => {
-  lists: []
-}
+export const state = () => ({
+  lists: [],
+
+  message: {
+    show: false,
+    conntent: ''
+  },
+
+  loading: false,
+
+  showLogin: false
+})
 
 export const getters = {
   currentList: state => id => {

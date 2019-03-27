@@ -28,13 +28,15 @@ module.exports = {
   ** Global CSS
   */
   css: [
-    '@/assets/css/common.css'
+    '@/assets/css/common.css',
+    '@/static/font/iconfont.css',
   ],
 
   /*
   ** Plugins to load before mounting the App
   */
   plugins: [
+    '@plugins/directive.js'
   ],
 
   /*

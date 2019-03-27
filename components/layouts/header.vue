@@ -5,20 +5,9 @@
         <i class="iconfont icon-menu"></i>
       </div>
       <div class="title">
-        <!-- <img src="t.png"> -->
         TODO
       </div>
-      <!-- 搜索 -->
-      <!-- <div class="search">
-        <input v-model='searchValue' @keyup.enter='search'></input>
-        <i
-          @click='clearSearchValue'
-          :class="['iconfont', searchValue ? 'icon-delete' : 'icon-search']"></i>
-        <div>
-          
-        </div>
-      </div> -->
-      <!-- 用户 -->
+
       <div>
         <div 
           v-if='!username' 
@@ -42,17 +31,16 @@
       </div>
     </div>
     <!-- 登录框 -->
-    <!-- <todo-dialog @hidedialog='showLogin = false' v-if='showLogin'>
-      <login-dialog 
-        @login='userAction' 
-        @reg='userAction'>
-      </login-dialog>
-    </todo-dialog> -->
+    <login-form v-show="showLogin"></login-form>   
   </header>
 </template>
 
 <script>
+  import LoginForm from '~/components/login'
+
   export default {
+    components: { LoginForm },
+
     props: {
       showMenu: false,
       username: '',
