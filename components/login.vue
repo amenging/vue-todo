@@ -1,29 +1,37 @@
 <template>
-  <div class="messageDiv">
-    <div class="dialog-body">
-      <form class='dialog-content login-form'>
-        <div class='form-control'>
+  <div class="messageDiv" v-show="showLogin" @click="toggleLogin">
+    <div class="dialog-body" @click.stop.prevent="stop">
+      <form class="dialog-content login-form">
+        <div class="form-control">
           <label>用户名</label>
           <input
-            autocomplete='username'
-            placeholder='用户名（10个字符以内）'
-            v-focus='true'
-            maxlength='10' 
-            v-model.trim='username' />
+            autocomplete="username"
+            placeholder="用户名（10个字符以内）"
+            v-focus="true"
+            maxlength="10"
+            v-model.trim="username" />
         </div>
-        <div class='form-control'>
+        <div class="form-control">
           <label>密码</label>
           <input
-            type='password'
-            autocomplete='current-password'
-            placeholder='密码（12个字符以内）'
-            maxlength='12' 
-            v-model.trim='password' />
+            type="password"
+            autocomplete="current-password"
+            placeholder="密码（12个字符以内）"
+            maxlength="12"
+            v-model.trim="password" />
         </div>
-        <div class='form-control'>
+        <!-- <div class="form-control">
+          <label>确认密码</label>
+          <input
+            type="rePassword"
+            placeholder="请再次输入密码"
+            maxlength="12"
+            v-model.trim="rePassword" />
+        </div> -->
+        <div class="form-control">
           <label></label>
-          <button @click.stop.prevent='login' class='login'>登录</button>
-          <button @click.stop.prevent='reg' class='reg'>注册</button>
+          <button @click.stop.prevent="login" class="login">登录</button>
+          <button @click.stop.prevent="reg" class="reg">注册</button>
         </div>
       </form>
     </div>
@@ -31,6 +39,9 @@
 </template>
 
 <script>
+  import { mapState, mapMutations } from 'vuex'
+  import { userLogin, userReg } from '@/assets/api/user_action'
+
   export default {
     props: {
 
@@ -39,14 +50,94 @@
     data () {
       return {
         username: '',
-        password: ''
+        password: '',
+        rePassword: '',
+        status: 'login'
       }
     },
-    
-    methods: {
-      login () {},
 
-      reg () {},
+    computed: {
+      ...mapState([
+        'showLogin',
+      ])
+    },
+
+    methods: {
+      login () {
+        if (this.username == '' || this.password == '') {
+          this.toggleMessage('请输入用户名和密码')
+          return
+        }
+
+        this.toggleLoading()
+
+        userLogin({
+          username: this.username,
+          password: this.password
+        }).then(res => {
+          this.toggleLoading()
+
+          if (res.data.code == 0) {
+            this.setUserInfo({
+              userid: res.data.data.userid,
+              username: this.username
+            })
+            this.toggleMessage('登陆成功')
+            this.toggleLogin()
+
+            this.$store.dispatch('listInit', res.data.data.userid)
+          } else {
+            this.toggleMessage(res.data.msg)
+          }
+
+          setTimeout(() => {
+            this.toggleMessage()
+          }, 1000)
+        })
+      },
+
+      reg () {
+        if (this.username == '' || this.password == '') {
+          this.toggleMessage('请输入用户名和密码')
+          return
+        }
+
+        // if (this.password != this.rePassword) {
+        //   this.toggleMessage('两次输入的密码不一样')
+        //   return
+        // }
+
+        this.toggleLoading()
+
+        userReg({
+          username: this.username,
+          password: this.password
+        }).then(res => {
+          this.toggleLoading()
+
+          if (res.data.code == 0) {
+            this.toggleMessage('注册成功')
+            this.toggleLogin()
+          } else {
+            this.toggleMessage(res.data.msg)
+          }
+
+          setTimeout(() => {
+            this.toggleMessage()
+          }, 1000)
+        })
+      },
+
+      ...mapMutations([
+        'toggleLogin',
+        'toggleLoading',
+        'toggleMessage',
+        'setUserInfo',
+      ])
+    },
+
+    mounted () {
+
     }
   }
 </script>

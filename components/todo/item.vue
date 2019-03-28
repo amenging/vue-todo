@@ -3,15 +3,15 @@
     <div class='todo-tab'>
       <div
         :class="['tab-item', index == choosetab ? 'tab-active': '']"
-        @click='tabChange(index)' 
-        v-for='(title, index) in tabtitles'
+        @click="tabChange(index)"
+        v-for="(title, index) in tabtitles"
         :key="index">
         {{title}}
       </div>
     </div>
 
     <ul>
-      <div v-if='items.length == 0' class='nothing'>啥都木有哦(*/ω＼*)</div>
+      <div v-if="items.length == 0" class="nothing">啥都木有哦(*/ω＼*)</div>
       <input
         v-if="choosetab == 0"
         v-model.trim="val"
@@ -19,13 +19,13 @@
         class="addNewItem"
         placeholder="输入后enter新增" />
       <li
-        v-for="(list, index) in items"
+        v-for="(list, index) in currentItems"
         :class="{ 'checked': list.status == 1 }"
         :key="index">
         <div class="checkRadio">
           <i
             @click="click(list.items_id)"
-            :class="['iconfont', list.status == 1 ? check : uncheck]"></i>
+            :class="['iconfont icon-weixuanyuanquan', list.status == 1 ? check : uncheck]"></i>
         </div>
         <div>
           <span
@@ -52,9 +52,10 @@
 </template>
 
 <script>
+  import { mapState, mapGetters } from 'vuex'
+
   export default {
     props: {
-      items: [Array]
     },
 
     data () {
@@ -65,6 +66,16 @@
         choosetab: 0,
         tabtitles: ['全部', '未完成', '已完成']
       }
+    },
+
+    computed: {
+      ...mapState([
+        'items',
+        'currentIndex'
+      ]),
+      ...mapGetters([
+        'currentItems'
+      ])
     },
 
     methods: {

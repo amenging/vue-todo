@@ -9,10 +9,7 @@
       </div>
 
       <div>
-        <div 
-          v-if='!username' 
-          class="login" 
-          @click='showLogin = true'>
+        <div v-if="username === null" class="login" @click='toggleLogin'>
           Login
         </div>
         <div
@@ -30,21 +27,16 @@
         </div>
       </div>
     </div>
-    <!-- 登录框 -->
-    <login-form v-show="showLogin"></login-form>   
   </header>
 </template>
 
 <script>
-  import LoginForm from '~/components/login'
+  import { mapState, mapMutations } from 'vuex'
+  import { userLogout } from '@/assets/api/user_action'
 
   export default {
-    components: { LoginForm },
-
     props: {
-      showMenu: false,
-      username: '',
-      showLogin: false,
+      showMenu: false
     },
 
     data () {
@@ -52,9 +44,35 @@
 
       }
     },
-    
+
+    computed: {
+      ...mapState({
+        username: 'USER_NAME'
+      })
+    },
+
     methods: {
-      logout () {}
+      logout () {
+        userLogout().then(res => {
+          console.log(res)
+          if (res.data.code == 0) {
+            this.setUserInfo({
+              userid: null,
+              username: null
+            })
+
+            this.setLists([])
+            this.setItems([])
+          }
+        })
+      },
+
+      ...mapMutations([
+        'toggleLogin',
+        'setUserInfo',
+        'setLists',
+        'setItems',
+      ])
     }
   }
 </script>

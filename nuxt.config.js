@@ -58,9 +58,8 @@ module.exports = {
 
   proxy: {
     '/api': {
-      target: (process.env.NODE_ENV === 'production')
-      ? 'http://localhost:3000'
-      : 'http://yapi.demo.qunar.com/mock/16752'
+      target: 'http://localhost:3000'
+      // : 'http://yapi.demo.qunar.com/mock/16752'
     },
     changeOrigin: true
   },

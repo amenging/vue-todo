@@ -2,6 +2,7 @@
   <div>
     <todo-header />
     <nuxt />
+    <todo-footer />
   </div>
 </template>
 
@@ -17,12 +18,14 @@ html, body {
 </style>
 
 <script>
-import TodoHeader from '~/components/layouts/header'
+  import TodoHeader from '~/components/layouts/header'
+  import TodoFooter from '~/components/layouts/footer'
 
-export default {
-  components: {
-    TodoHeader
+  export default {
+    components: {
+      TodoHeader,
+      TodoFooter,
+    }
   }
-}
 </script>
 

@@ -6,7 +6,7 @@
         v-for="(list, index) in lists"
         @click.self="handleListTitle(index)"
         @touchend="touchStart(index)"
-        :class="{'titleActive': index == title}"
+        :class="{'titleActive': index == currentIndex}"
         :key="index">
         <span @click.self="handleListTitle(index)">{{ list.list_name }}</span>
         <span class="deleteList" @click="deleteList(index)">
@@ -17,13 +17,20 @@
         </span>
       </li>
     </ul>
+    <!-- 工具列表 -->
+    <todo-menu></todo-menu>
   </div>
 </template>
 
 <script>
+  import { mapState } from 'vuex'
+
+  import TodoMenu from '@/components/todo/menu'
+
   export default {
+    components: { TodoMenu },
+
     props: {
-      lists: [Array]
     },
 
     data () {
@@ -32,6 +39,13 @@
         showMenu: false,
         title: 's'
       }
+    },
+
+    computed: {
+      ...mapState([
+        'lists',
+        'currentIndex',
+      ])
     },
 
     methods: {

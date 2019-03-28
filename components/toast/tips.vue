@@ -1,8 +1,6 @@
 <template>
-  <div class="messageDiv" v-show="message.show">
-    <div class="warning">
-      {{ message.content }}
-    </div>
+  <div class="tips" :style="tips.style" v-show='tips.show'>
+    <span>{{ tips.conntent }}</span>
   </div>
 </template>
 
@@ -22,7 +20,7 @@
 
     computed: {
       ...mapState([
-        'message'
+        'tips'
       ])
     },
 
