@@ -8,28 +8,10 @@
   import { mapState } from 'vuex'
 
   export default {
-    props: {
-
-    },
-
-    data () {
-      return {
-
-      }
-    },
-
     computed: {
       ...mapState([
         'tips'
       ])
-    },
-
-    methods: {
-
     }
   }
 </script>
-
-<style scoped='scoped'>
-
-</style>

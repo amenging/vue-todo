@@ -63,6 +63,8 @@
     },
 
     methods: {
+      stop () {},
+
       login () {
         if (this.username == '' || this.password == '') {
           this.toggleMessage('请输入用户名和密码')
@@ -75,6 +77,7 @@
           username: this.username,
           password: this.password
         }).then(res => {
+          console.log(res)
           this.toggleLoading()
 
           if (res.data.code == 0) {
@@ -89,10 +92,6 @@
           } else {
             this.toggleMessage(res.data.msg)
           }
-
-          setTimeout(() => {
-            this.toggleMessage()
-          }, 1000)
         })
       },
 
@@ -128,10 +127,13 @@
         })
       },
 
+      toggleMessage (data) {
+        this.$store.dispatch('toggleMessage', data || null)
+      },
+
       ...mapMutations([
         'toggleLogin',
         'toggleLoading',
-        'toggleMessage',
         'setUserInfo',
       ])
     },

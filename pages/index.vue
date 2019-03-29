@@ -9,6 +9,9 @@
     <!-- 加载动画 -->
     <loading></loading>
 
+    <!-- 编辑弹窗 -->
+    <edit-form></edit-form>
+
     <!-- todo主体 -->
     <div class="todo-app" v-if="USER_ID != null">
       <!-- 清单列表 -->
@@ -30,6 +33,7 @@
   import Loading from '@/components/toast/loading'
   import Message from '@/components/toast/message'
   import LoginForm from '@/components/login'
+  import EditForm from '@/components/toast/form'
   import Tips from '@/components/toast/tips'
 
   import { getTodoLists } from '~/assets/api/todo'
@@ -46,6 +50,7 @@
       Message,
       LoginForm,
       Tips,
+      EditForm,
     },
 
     data () {
@@ -65,6 +70,9 @@
     },
 
     mounted () {
+      // this.$axios.post('/todo/change_todo_item_status').then(res => {
+      //   console.log(res)
+      // })
       if (this.USER_ID) {
         this.$store.dispatch('listInit', this.USER_ID)
       }

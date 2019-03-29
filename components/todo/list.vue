@@ -4,15 +4,15 @@
     <ul>
       <li
         v-for="(list, index) in lists"
-        @click.self="handleListTitle(index)"
+        @click.self="changeCurrentIndex(index)"
         @touchend="touchStart(index)"
         :class="{'titleActive': index == currentIndex}"
         :key="index">
-        <span @click.self="handleListTitle(index)">{{ list.list_name }}</span>
-        <span class="deleteList" @click="deleteList(index)">
+        <span @click.self="changeCurrentIndex(index)">{{ list.list_name }}</span>
+        <span class="deleteList" @click="removeTodoList(index)">
           <i class="iconfont icon-delete"></i>
         </span>
-        <span class="editList" @click="editList(index)">
+        <span class="editList" @click="toggleEditForm(index)">
           <i class="iconfont icon-edit"></i>
         </span>
       </li>
@@ -23,7 +23,7 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex'
+  import { mapState, mapMutations } from 'vuex'
 
   import TodoMenu from '@/components/todo/menu'
 
@@ -49,13 +49,18 @@
     },
 
     methods: {
-      handleListTitle () {},
+      removeTodoList (index) {
+        this.$store.dispatch('removeTodoList', index)
+      },
 
       touchStart () {},
 
       deleteList () {},
 
-      editList () {},
+      ...mapMutations([
+        'changeCurrentIndex',
+        'toggleEditForm'
+      ])
     }
   }
 </script>

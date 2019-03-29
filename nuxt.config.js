@@ -36,7 +36,11 @@ module.exports = {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    '@plugins/directive.js'
+    '@plugins/directive.js',
+    {
+      src: '@plugins/interceptor.js',
+      ssr: true
+    }
   ],
 
   /*
@@ -71,7 +75,9 @@ module.exports = {
     /*
     ** You can extend webpack config here
     */
+    devtool: 'cheap-module-eval-source-map',
     extend(config, ctx) {
+
     }
   }
 }

@@ -10,28 +10,10 @@
   import { mapState } from 'vuex'
 
   export default {
-    props: {
-
-    },
-
-    data () {
-      return {
-
-      }
-    },
-
     computed: {
       ...mapState([
         'message'
       ])
     },
-
-    methods: {
-
-    }
   }
 </script>
-
-<style scoped='scoped'>
-
-</style>

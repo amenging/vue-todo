@@ -27,7 +27,7 @@
 </template>
 
 <script>
-
+  import { mapMutations } from 'vuex'
   export default {
     props: {
 
@@ -42,11 +42,19 @@
     methods: {
       showTips () {},
 
-      addNewList () {},
+      addNewList () {
+        this.toggleEditForm()
+        this.setEditListValue('')
+      },
 
       exportFile () {},
 
       importFile () {},
+
+      ...mapMutations([
+        'toggleEditForm',
+        'setEditListValue'
+      ])
 
     }
   }

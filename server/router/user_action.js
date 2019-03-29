@@ -1,7 +1,9 @@
 const express = require('express')
 const router = express.Router()
 
-const UserAction = require('../api').UserAction
+const UserAction = require('../api/user.js')
+
+console.log(UserAction)
 
 router.post('/login', (req, res, next) => {
   UserAction.login(req, res)
