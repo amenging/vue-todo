@@ -1,6 +1,6 @@
 <template>
   <div class="tips" :style="tips.style" v-show='tips.show'>
-    <span>{{ tips.conntent }}</span>
+    <span>{{ tips.content }}</span>
   </div>
 </template>
 

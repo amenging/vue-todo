@@ -14,7 +14,7 @@ const Todo = {
   // 获取数据列表
   getTodoLists: async function (req, res) {
     const userid = req.body.userid
-    if (!userid) {
+    if (userid == undefined) {
       res.json(errMsg)
       return
     }
@@ -48,7 +48,7 @@ const Todo = {
   addTodoList: async function (req, res) {
     const list_name = req.body.list_name,
       user_id = req.body.user_id
-    if (!list_name || !user_id) {
+    if (list_name == undefined || user_id == undefined) {
       res.json(argError)
       return
     }
@@ -75,7 +75,7 @@ const Todo = {
   // 删除清单
   removeTodoList: async function (req, res) {
     const list_id = req.body.list_id
-    if (!list_id) {
+    if (list_id == undefined) {
       res.json(argError)
       return
     }
@@ -91,9 +91,9 @@ const Todo = {
 
       const result = await mysqlConn.getConn(sql)
 
-      res.json({
+      data = {
         code: 0
-      })
+      }
     } else {
       data = connetError
     }
@@ -133,7 +133,7 @@ const Todo = {
     const list_id = req.body.list_id,
       content = req.body.content
 
-    if (!list_id || !content) {
+    if (list_id == undefined || content == undefined) {
       res.json(argError)
       return
     }
@@ -167,13 +167,17 @@ const Todo = {
       return
     }
 
-    const sql = `delete from items where items_id='${item_id}'`
+    let sql = `delete from items where items_id='${item_id}'`
+
+    if (typeof item_id === 'object') {
+      sql = `delete from items where items_id in (${item_id.join(',')})`
+    }
 
     const result = await mysqlConn.getConn(sql)
 
     let data = {}
 
-    if (result.affectedRows === 1) {
+    if (result.affectedRows >= 1) {
       data = {
         code: 0
       }
@@ -236,6 +240,38 @@ const Todo = {
     }
 
     res.json(data)
+  },
+
+  exportFile: async function (req, res) {},
+
+  importFile: async function (req, res) {
+    const lists = req.body.data,
+      user_id = req.body.user_id
+
+    if (lists == undefined || user_id == undefined) {
+      res.json(argError)
+      return
+    }
+
+    const sql_items = `insert into items (content, list_id, status) values ?`
+
+    for (var i = 0; i < lists.length; i ++) {
+      const sql = `insert into lists (list_name, user_id) values ('${lists[i].list_name}', '${user_id}')`
+
+      const result = await mysqlConn.getConn(sql)
+
+      if (lists[i].items.length > 0) {
+        const items = lists[i].items.map(ele => {
+          return [ele, result.insertId, 0]
+        })
+
+        const result_items = await mysqlConn.getConn(sql_items, items)
+      }
+    }
+
+    res.json({
+      code: 0
+    })
   },
 }
 

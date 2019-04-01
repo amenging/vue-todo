@@ -1,5 +1,15 @@
 const pkg = require('./package')
+const { createRenderer } = require('vue-server-renderer')
 
+const renderer = createRenderer({
+  directives: {
+    focus (el, {value}) {
+      if (value) {
+        el.focus = value
+      }
+    }
+  }
+})
 
 module.exports = {
   mode: 'universal',
@@ -36,7 +46,7 @@ module.exports = {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    '@plugins/directive.js',
+    // '@plugins/directive.js',
     {
       src: '@plugins/interceptor.js',
       ssr: true
@@ -78,6 +88,18 @@ module.exports = {
     devtool: 'cheap-module-eval-source-map',
     extend(config, ctx) {
 
+    },
+    ssr: {
+      shouldPreload: () => false,
+      directives: {
+        focus (el, {value}) {
+          if (value) {
+            el.focus = value
+          }
+        }
+      }
     }
-  }
+  },
+
+  renderer
 }

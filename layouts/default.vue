@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="layout">
     <todo-header />
     <nuxt />
     <todo-footer />
@@ -7,14 +7,14 @@
 </template>
 
 <style>
-@font-face {
-  font-family: 'Josefin_Sans';
-  src: url('/font/JosefinSans-Regular.ttf');
-  font-display: fallback;
-}
-html, body {
-  font-family: 'Josefin_Sans', 'Microsoft JhengHei', 'Microsoft YaHei';
-}
+  .layout {
+    position: absolute;
+    margin: auto;
+    left: 0;
+    right: 0;
+    padding-bottom: 77px;
+    min-height: 88%;
+  }
 </style>
 
 <script>

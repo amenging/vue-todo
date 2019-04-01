@@ -3,6 +3,15 @@
   src: url('/font/JosefinSans-Regular.ttf');
   font-display: fallback;
 }
+@font-face {
+  font-family: 'iconfont';  /* project id 1118917 */
+  src: url('http://at.alicdn.com/t/font_1118917_4cap4a3kz9y.eot');
+  src: url('http://at.alicdn.com/t/font_1118917_4cap4a3kz9y.eot?#iefix') format('embedded-opentype'),
+  url('http://at.alicdn.com/t/font_1118917_4cap4a3kz9y.woff2') format('woff2'),
+  url('http://at.alicdn.com/t/font_1118917_4cap4a3kz9y.woff') format('woff'),
+  url('http://at.alicdn.com/t/font_1118917_4cap4a3kz9y.ttf') format('truetype'),
+  url('http://at.alicdn.com/t/font_1118917_4cap4a3kz9y.svg#iconfont') format('svg');
+}
 html, body {
   font-family: 'Josefin_Sans', 'Microsoft JhengHei', 'Microsoft YaHei';
 }
@@ -45,14 +54,6 @@ header {
   background: linear-gradient(to right, #02AAB0, #00cdac);
   height: 70px;
   letter-spacing: 2px;
-}
-#app {
-  position: absolute;
-  margin: auto;
-  left: 0;
-  right: 0;
-  padding-bottom: 77px;
-  min-height: 88%;
 }
 .nav {
   line-height: 70px;
@@ -119,6 +120,11 @@ header {
   /*transition: .3s;*/
   margin: 1px auto;
   position: relative;
+  display: flex;
+  justify-content: space-between;
+}
+.todo-app li:active {
+  background: #f2f2f2;
 }
 .todo-title, .todo-list {
   box-shadow: 0 0 18px rgba(228, 228, 228, 0.38);
@@ -156,6 +162,7 @@ header {
   padding: 15px;
   box-sizing: border-box;
   padding-top: 0;
+  position: relative;
 }
 .todo-list li {
   /*transition: .3s;*/
@@ -283,19 +290,19 @@ header {
   bottom: 0;
   display: flex;
   width: 100%;
-  height: 30px;
+  height: 35px;
   left: 0;
 }
 .dialog-footer button {
   width: 50%;
-  height: 30px;
+  height: 35px;
   border: 0;
   padding: 0;
   cursor: pointer;
   outline: none;
 }
 .dialog-footer button:first-child {
-  background: #e4e4e4;
+  background: #f2f2f2;
 }
 .dialog-footer button:last-child {
   background: #00bfad;
@@ -468,10 +475,8 @@ footer {
   border-top-color: transparent;
   border-right-color: transparent;
   position: absolute;
-  top: -10px;
+  top: -9px;
   border-top: none;
-  /* box-shadow: 0 0 10px #ccc; */
-  /*left: 18px;*/
   right: 8px;
 }
 .userMenu {
@@ -485,6 +490,7 @@ footer {
   box-shadow: 0 0 10px #ccc;
   width: 119px;
   right: -14px;
+  border-radius: 3px;
 }
 .userMenu li {
   list-style: none;
@@ -606,12 +612,12 @@ footer {
   header {
     position: fixed;
     width: 100%;
-    /*height: 50px;*/
-    /*line-height: 50px;*/
+    height: 50px;
+    line-height: 50px;
     z-index: 1;
   }
   .nav {
-    /*line-height: 50px;*/
+    line-height: 50px;
   }
   .title {
     font-size: 1.2em;

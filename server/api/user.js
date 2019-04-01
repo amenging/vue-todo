@@ -72,7 +72,7 @@ const UserAction = {
       } else {
         data = {
           code: 1,
-          msg: '电波传送失败了喲'
+          msg: '电波传送失败了哟'
         }
       }
 

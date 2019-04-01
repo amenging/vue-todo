@@ -4,17 +4,19 @@
     <ul>
       <li
         v-for="(list, index) in lists"
-        @click.self="changeCurrentIndex(index)"
+        @click.self="_changeCurrentIndex(index)"
         @touchend="touchStart(index)"
         :class="{'titleActive': index == currentIndex}"
         :key="index">
-        <span @click.self="changeCurrentIndex(index)">{{ list.list_name }}</span>
-        <span class="deleteList" @click="removeTodoList(index)">
-          <i class="iconfont icon-delete"></i>
-        </span>
-        <span class="editList" @click="toggleEditForm(index)">
-          <i class="iconfont icon-edit"></i>
-        </span>
+        <div @click.self="_changeCurrentIndex(index)">{{ list.list_name }}</div>
+        <div>
+          <span class="deleteList" @click="removeTodoList(index, list.list_name)">
+            <i class="iconfont icon-delete"></i>
+          </span>
+          <span class="editList" @click="toggleEditForm(index)">
+            <i class="iconfont icon-edit"></i>
+          </span>
+        </div>
       </li>
     </ul>
     <!-- 工具列表 -->
@@ -36,7 +38,6 @@
     data () {
       return {
         index: 0,
-        showMenu: false,
         title: 's'
       }
     },
@@ -45,21 +46,33 @@
       ...mapState([
         'lists',
         'currentIndex',
+        'showMenu'
       ])
     },
 
     methods: {
-      removeTodoList (index) {
-        this.$store.dispatch('removeTodoList', index)
+      removeTodoList (index, list_name) {
+        this.togglePrompt({
+          content: `你确认要删除${list_name}吗？`,
+          next: 'removeTodoList',
+          data: index
+        })
       },
 
       touchStart () {},
 
       deleteList () {},
 
+      _changeCurrentIndex (index) {
+        this.changeCurrentIndex(index)
+        this.toggleShowMenu(false)
+      },
+
       ...mapMutations([
         'changeCurrentIndex',
-        'toggleEditForm'
+        'toggleEditForm',
+        'toggleShowMenu',
+        'togglePrompt'
       ])
     }
   }

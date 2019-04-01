@@ -1,22 +1,3 @@
-// import axios from 'axios'
-
-// axios.interceptors.request.use((config) => {
-//   // Vue.set(Todo, 'waiting', true)
-//   return config
-// }, err => {
-//   return Promise.reject(err)
-// })
-
-// axios.interceptors.response.use((res) => {
-//   // Vue.set(Todo, 'waiting', false)
-//   // if (res.data.message && Todo.waiting == false) {
-//   //   Todo.showWarning(res.data.message)
-//   // }
-//   return res
-// }, err => {
-//   return Promise.reject(err)
-// })
-
 import {
   getTodoLists,
   addTodoList,
@@ -57,10 +38,23 @@ export const state = () => ({
   // 编辑弹窗
   showEditForm: false,
 
+  // 导出清单弹窗
+  showExportForm: false,
+
+  // 手机版菜单
+  showMenu: false,
+
   // 小贴士
   tips: {
     show: false,
     conntent: ''
+  },
+
+  // 确认弹窗
+  prompt: {
+    show: false,
+    content: '',
+    next: ''
   },
 
   // 登录弹窗
@@ -68,7 +62,8 @@ export const state = () => ({
 
   // 用户信息
   USER_ID: null,
-  USER_NAME: null
+  USER_NAME: null,
+
 })
 
 export const getters = {
@@ -106,9 +101,16 @@ export const mutations = {
 
   // 消息提示框
   toggleMessage (state, content) {
-    state.message = {
-      show: !state.message.show,
-      content: content || ''
+    if (content) {
+      state.message = {
+        show: true,
+        content: content
+      }
+    } else {
+      state.message = {
+        show: false,
+        content: ''
+      }
     }
   },
 
@@ -129,16 +131,41 @@ export const mutations = {
 
   // 小贴士
   toggleTips (state, data) {
-    state.tips = {
-      show: !state.tips.show,
-      content: data.content || '',
-      style: data.style || ''
+    state.tips.show = !state.tips.show
+    if (data) {
+      state.tips.content = data.content
+      state.tips.style = data.style
+    }
+  },
+
+  // 确认弹窗
+  togglePrompt (state, data) {
+    if (data) {
+      state.prompt = {
+        show: true,
+        ...data
+      }
+    } else {
+      state.prompt = {
+        show: false,
+        content: ''
+      }
     }
   },
 
   // 登录弹窗
   toggleLogin (state) {
     state.showLogin = !state.showLogin
+  },
+
+  // 导出清单弹窗
+  toggleExportForm (state) {
+    state.showExportForm = !state.showExportForm
+  },
+
+  // 手机版菜单
+  toggleShowMenu (state, data) {
+    state.showMenu = data
   },
 
   // 设置用户信息
@@ -180,11 +207,15 @@ export const mutations = {
 
   // 删除事项
   removeTodoItem (state, data) {
-    state.items.forEach((ele, index) => {
-      if (ele.items_id == data.item_id) {
-        state.items.splice(index, 1)
+    const items = state.items
+
+    data = data.sort()
+
+    for (var i = items.length - 1; i >= 0; i --) {
+      if (data.indexOf(items[i].items_id) > -1) {
+        state.items.splice(i, 1)
       }
-    })
+    }
   },
 
   // 编辑事项
@@ -206,11 +237,21 @@ export const mutations = {
   }
 }
 
+let messageTimeout
+
 export const actions = {
+  // 小贴士
+  toggleTips ({ commit }, data) {
+    commit('toggleTips', data)
+  },
+
+  // 消息提示框
   toggleMessage ({ commit }, data) {
+    clearTimeout(messageTimeout)
+
     commit('toggleMessage', data)
 
-    setTimeout(() => {
+    messageTimeout = setTimeout(() => {
       commit('toggleMessage')
     }, 1000)
   },
@@ -233,7 +274,7 @@ export const actions = {
         userid: req.session.userid
       })
 
-      console.log(req.session)
+      console.log('req.session:', req.session)
 
       await dispatch('listInit', req.session.userid)
     } else if (req.session && !req.session.username) {
@@ -245,15 +286,14 @@ export const actions = {
   },
 
   // 添加清单
-  addTodoList ({ state, commit }, data) {
+  addTodoList ({ state, commit, dispatch }, data) {
     const params = {
       list_name: state.currentEditListValue,
       user_id: state.USER_ID
     }
 
     addTodoList(params).then(res => {
-      console.log(res)
-      commit('toggleMessage', res.data.code === 0 ? '添加清单成功' : errMsg)
+      dispatch('toggleMessage', res.data.code === 0 ? '添加清单成功' : errMsg)
 
       if (res.data.code === 0) {
         commit('addTodoList', {
@@ -261,25 +301,21 @@ export const actions = {
           ...params
         })
       }
-
-      setTimeout(() => {
-        commit('toggleMessage')
-      }, 1000)
     })
   },
 
   // 删除清单
-  removeTodoList ({ state, commit }, data) {
+  removeTodoList ({ state, commit, dispatch }, data) {
     const params = {
       list_id: state.lists[data].list_id
     }
 
     removeTodoList(params).then(res => {
-      commit('toggleMessage', res.data.code === 0 ? '删除清单成功' : errMsg)
+      dispatch('toggleMessage', res.data.code === 0 ? '删除清单成功' : errMsg)
 
       if (res.data.code === 0) {
         let currentIndex = data
-        if (state.currentIndex == data) {
+        if (state.currentIndex >= data) {
           if (state.lists.length > 0 && state.lists.length - 1 > data) {
             currentIndex = data
           } else {
@@ -289,31 +325,22 @@ export const actions = {
         }
         commit('removeTodoList', data)
       }
-
-      setTimeout(() => {
-        commit('toggleMessage')
-      }, 1000)
     })
   },
 
   // 修改清单
-  editTodoList ({ state, commit }, data) {
-    console.log(state.currentEditListValue)
+  editTodoList ({ state, commit, dispatch }, data) {
     const params = {
       list_id: state.lists[state.currentEditListIndex].list_id,
       list_name: state.currentEditListValue
     }
 
     editTodoList(params).then(res => {
-      commit('toggleMessage', res.data.code === 0 ? '修改清单成功' : errMsg)
+      dispatch('toggleMessage', res.data.code === 0 ? '修改清单成功' : errMsg)
 
       if (res.data.code === 0) {
         commit('editTodoList')
       }
-
-      setTimeout(() => {
-        commit('toggleMessage')
-      }, 1000)
     })
   },
 
@@ -346,57 +373,67 @@ export const actions = {
   },
 
   // 删除事项
-  removeTodoItem ({ state, commit }, data) {
+  removeTodoItem ({ state, commit, dispatch }, data) {
     commit('toggleLoading')
     removeTodoItem(data).then(res => {
       commit('toggleLoading')
 
-      commit('toggleMessage', res.data.code === 0 ? '删除事项成功' : errMsg)
+      dispatch('toggleMessage', res.data.code === 0 ? '删除事项成功' : errMsg)
 
       if (res.data.code === 0) {
-        commit('removeTodoItem', data)
+        commit('removeTodoItem', [data.item_id])
       }
 
-      setTimeout(() => {
-        commit('toggleMessage')
-      }, 1000)
     })
   },
 
   // 编辑事项
-  editTodoItem ({ commit }, data) {
+  editTodoItem ({ commit, dispatch }, data) {
     commit('toggleLoading')
     editTodoItem(data).then(res => {
       commit('toggleLoading')
 
-      commit('toggleMessage', res.data.code === 0 ? '编辑事项成功' : errMsg)
+      dispatch('toggleMessage', res.data.code === 0 ? '编辑事项成功' : errMsg)
 
       if (res.data.code === 0) {
         commit('editTodoItem', data)
       }
-
-      setTimeout(() => {
-        commit('toggleMessage')
-      }, 1000)
     })
   },
 
   // 修改事项状态
-  changeTodoItemStatus ({ commit }, data) {
+  changeTodoItemStatus ({ commit, dispatch }, data) {
     commit('toggleLoading')
 
     changeTodoItemStatus(data).then(res => {
       commit('toggleLoading')
 
-      commit('toggleMessage', res.data.code === 0 ? '修改事项状态成功' : errMsg)
+      dispatch('toggleMessage', res.data.code === 0 ? '修改事项状态成功' : errMsg)
 
       if (res.data.code === 0) {
         commit('changeTodoItemStatus', data.item_id)
       }
-
-      setTimeout(() => {
-        commit('toggleMessage')
-      }, 1000)
     })
   },
+
+  // 清除当前清单的已完成事项
+  clearDoneItems ({ state, commit, dispatch }) {
+    const item_id = state.items.filter(ele => {
+      return ele.list_id == state.lists[state.currentIndex].list_id && ele.status == 1
+    }).map(ele => ele.items_id)
+
+    if (item_id.length > 0) {
+      const params = {
+        item_id
+      }
+
+      removeTodoItem(params).then(res => {
+        dispatch('toggleMessage', res.data.code === 0 ? '清除完成' : errMsg)
+
+        if (res.data.code === 0) {
+          commit('removeTodoItem', item_id)
+        }
+      })
+    }
+  }
 }

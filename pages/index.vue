@@ -12,18 +12,29 @@
     <!-- 编辑弹窗 -->
     <edit-form></edit-form>
 
+    <!-- 小贴士 -->
+    <tips></tips>
+
+    <!-- 导出清单弹窗 -->
+    <export-form></export-form>
+
+    <!-- 确认弹窗 -->
+    <prompt></prompt>
+
+    <div class="grey" v-show="showMenu" @click="toggleShowMenu"></div>
+
     <!-- todo主体 -->
-    <div class="todo-app" v-if="USER_ID != null">
+    <div class="todo-app">
       <!-- 清单列表 -->
       <todo-list></todo-list>
 
       <!-- 事项列表 -->
       <todo-item v-if="lists.length > 0"></todo-item>
-      <div class="nothing" v-else>还没有清单呢</div>
+      <div class="nothing" v-if="USER_ID != null && lists.length == 0">还没有清单呢</div>
     </div>
 
     <!-- 未登录提示信息 -->
-    <div class="nothing" v-else>请先先登录或注册哦</div>
+    <div class="nothing" v-if="USER_ID == null">请先先登录或注册哦</div>
   </div>
 </template>
 
@@ -35,10 +46,12 @@
   import LoginForm from '@/components/login'
   import EditForm from '@/components/toast/form'
   import Tips from '@/components/toast/tips'
+  import ExportForm from '@/components/toast/export-form'
+  import Prompt from '@/components/toast/prompt'
 
   import { getTodoLists } from '~/assets/api/todo'
 
-  import { mapState } from 'vuex'
+  import { mapState, mapMutations } from 'vuex'
 
   export default {
     name: 'TodoApp',
@@ -51,6 +64,8 @@
       LoginForm,
       Tips,
       EditForm,
+      ExportForm,
+      Prompt,
     },
 
     data () {
@@ -65,14 +80,18 @@
 
       ...mapState([
         'USER_ID',
-        'lists'
+        'lists',
+        'showMenu'
+      ])
+    },
+
+    methods: {
+      ...mapMutations([
+        'toggleShowMenu'
       ])
     },
 
     mounted () {
-      // this.$axios.post('/todo/change_todo_item_status').then(res => {
-      //   console.log(res)
-      // })
       if (this.USER_ID) {
         this.$store.dispatch('listInit', this.USER_ID)
       }

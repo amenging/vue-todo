@@ -7,7 +7,7 @@
           <input
             autocomplete="username"
             placeholder="用户名（10个字符以内）"
-            v-focus="true"
+            autofocus
             maxlength="10"
             v-model.trim="username" />
         </div>

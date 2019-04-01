@@ -1,7 +1,7 @@
 <template>
   <header>
     <div class="nav">
-      <div class="menu" @click='showMenu = true'>
+      <div class="menu" @click="toggleShowMenu(true)">
         <i class="iconfont icon-menu"></i>
       </div>
       <div class="title">
@@ -13,7 +13,7 @@
           Login
         </div>
         <div
-          class='username'
+          class="username"
           v-else>
           <span class="username-text">{{ username }}<span class="arrow"></span></span>
           <span class="username-icon"><i class="iconfont icon-caidan08"></i></span>
@@ -36,12 +36,11 @@
 
   export default {
     props: {
-      showMenu: false
     },
 
     data () {
       return {
-
+        showMenu: false
       }
     },
 
@@ -72,42 +71,11 @@
         'setUserInfo',
         'setLists',
         'setItems',
+        'toggleShowMenu'
       ])
     }
   }
 </script>
 
 <style scoped='scoped'>
-header {
-  background: #444c5f;
-  background: linear-gradient(to right, #02AAB0, #00cdac);
-  height: 70px;
-  letter-spacing: 2px;
-}
-.title {
-  font-size: 1.6em;
-}
-.title img {
-  width: 28px;
-}
-.nav, .todo-app {
-  width: 80%;
-  margin: auto;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-}
-.login, .username {
-  cursor: pointer;
-  position: relative;
-}
-.arrow {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  border-bottom: 1px solid #fff;
-  border-right: 1px solid #fff;
-  transform: rotate(45deg) translateY(-2px);
-  margin-left: 5px;
-}
 </style>

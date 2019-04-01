@@ -10,6 +10,12 @@
       </div>
     </div>
 
+    <div
+      class="clear"
+      @click="clearDoneItems">
+      <i class="iconfont">&#xe6d1;</i>
+    </div>
+
     <ul>
       <div v-if="currentItems.length == 0" class="nothing">
         啥都木有哦(*/ω＼*)
@@ -55,7 +61,7 @@
           class="editInput"
           v-if="editIndex == list.items_id && list.status == 0"
           v-model.trim="editValue"
-          v-focus="editIndex == list.items_id"
+
           @blur="confirmEdit(list.items_id)"
           @keyup.enter="editIndex = null"/>
       </li>
@@ -93,8 +99,14 @@
     },
 
     methods: {
+      ...mapMutations([
+        'changeStatus',
+        'togglePrompt'
+      ]),
+
+      // 新增事项
       addTodoItem () {
-        if (this.currentEditListValue === '') {
+        if (this.newItemValue === '') {
           this.$store.dispatch('toggleMessage', '你还什么都没写呢')
           return
         }
@@ -121,9 +133,9 @@
           item_id: id,
           content: this.editValue
         })
-
       },
 
+      // 改变事项状态
       changeTodoItemStatus (id, status) {
         this.$store.dispatch('changeTodoItemStatus', {
           item_id: id,
@@ -131,21 +143,39 @@
         })
       },
 
+      // 删除事项
       removeTodoItem (id) {
         this.$store.dispatch('removeTodoItem', { item_id: id })
       },
 
-      tabChange () {},
-
-      ...mapMutations([
-        'changeStatus',
-        // 'editTodoItem',
-        // 'changeTodoItemStatus',
-      ])
+      // 清除完成事项
+      clearDoneItems () {
+        this.togglePrompt({
+          content: '你确认要清除此清单已完成的事项吗？',
+          next: 'clearDoneItems'
+        })
+      }
     }
   }
 </script>
 
 <style scoped='scoped'>
-
+  .clear {
+    position: absolute;
+    right: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 40px;
+    background: rgba(2, 182, 175, 0.62);
+    text-align: center;
+    line-height: 40px;
+    right: -10px;
+    top: -10px;
+    box-shadow: 1px 1px 3px #c6d8d7;
+    cursor: pointer;
+  }
+  .clear i {
+    color: #fff;
+    font-size: 22px;
+  }
 </style>

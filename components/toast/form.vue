@@ -5,7 +5,7 @@
         <div class="form-control">
           <label>清单名称</label>
           <input
-            v-focus="true"
+            autofocus
             maxlength="10"
             @keyup.enter="submit"
             v-model.trim="currentEditListValue" />

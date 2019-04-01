@@ -1,5 +1,7 @@
 const express = require('express')
 const router = express.Router()
+// const fs = require('fs')
+// const Archiver = require('archiver')
 
 const Todo = require('../api/todo')
 
@@ -41,6 +43,16 @@ router.post('/edit_todo_item', (req, res, next) => {
 // 修改事项状态
 router.post('/change_todo_item_status', (req, res, next) => {
   Todo.changeTodoItemStatus(req, res)
+})
+
+// 导出清单
+router.post('/export_file', (req, res, next) => {
+  Todo.exportFile(req, res)
+})
+
+// 导出清单
+router.post('/import_file', (req, res, next) => {
+  Todo.importFile(req, res)
 })
 
 module.exports = router
