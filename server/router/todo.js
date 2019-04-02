@@ -7,7 +7,6 @@ const Todo = require('../api/todo')
 
 // 获取数据列表
 router.post('/get_todo_lists', (req, res, next) => {
-  console.log(req)
   Todo.getTodoLists(req, res)
 })
 

@@ -278,11 +278,12 @@ export const actions = {
         userid: req.session.userid
       })
 
-      console.log('init req.session:', req.session)
+      // console.log('init req.session:', req.session)
 
+      // 从这里请求不经过代理？
       // await dispatch('listInit', req.session.userid)
     } else if (req.session && !req.session.username) {
-      console.log('no session')
+      // console.log('no session')
       commit('setUserInfo', {
         username: null,
         userid: null
