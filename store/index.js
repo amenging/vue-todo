@@ -258,11 +258,15 @@ export const actions = {
 
   // 初始化列表
   listInit ({ commit, state }, userid) {
-    getTodoLists({ userid }).then(res => {
+    const params = { userid: state.USER_ID }
+
+    getTodoLists(params).then(res => {
       if (res.data.data && res.data.data.lists) {
         commit('setLists', res.data.data.lists)
         commit('setItems', res.data.data.items)
       }
+    }).catch(e => {
+      console.log(e)
     })
   },
 
@@ -274,10 +278,11 @@ export const actions = {
         userid: req.session.userid
       })
 
-      console.log('req.session:', req.session)
+      console.log('init req.session:', req.session)
 
-      await dispatch('listInit', req.session.userid)
+      // await dispatch('listInit', req.session.userid)
     } else if (req.session && !req.session.username) {
+      console.log('no session')
       commit('setUserInfo', {
         username: null,
         userid: null

@@ -8,8 +8,9 @@ router.post('/login', (req, res, next) => {
 })
 
 router.post('/logout', (req, res, next) => {
-  delete req.session.username
-  delete req.session.userid
+  req.session.destroy()
+
+  console.log('logout req.session:', req.session)
 
   res.json({
     code: 0

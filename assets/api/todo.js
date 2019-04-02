@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-console.log(this)
+// console.log(this)
 // import { state } from '@/store/index.js'
 // import Vue from 'vue'
 

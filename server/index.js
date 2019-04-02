@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded({ extended: false })) // 解析post请求
 
 app.use(session({
   secret: 'secret',
-  resave: true,
+  resave: false,
   saveUninitialized: false,
   cookie: {
     maxAge: 60000 * 60 * 24 * 10
