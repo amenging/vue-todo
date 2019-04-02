@@ -12,26 +12,33 @@ const UserAction = {
     const result = await mysqlConn.getConn(sql)
 
     let data = {}
-    if (result.length === 0) {
+    if (!result) {
       data = {
-        code: 1,
-        msg: '用户名不存在'
+        code: -1,
+        msg: '网络错误'
       }
     } else {
-      if (PasswordHash.verify(password, result[0].user_pass)) {
-        data = {
-          code: 0,
-          data: {
-            userid: result[0].user_id
-          }
-        }
-        // 设置session
-        req.session.username = username
-        req.session.userid = result[0].user_id
-      } else {
+      if (result.length === 0) {
         data = {
           code: 1,
-          msg: '密码错误'
+          msg: '用户名不存在'
+        }
+      } else {
+        if (PasswordHash.verify(password, result[0].user_pass)) {
+          data = {
+            code: 0,
+            data: {
+              userid: result[0].user_id
+            }
+          }
+          // 设置session
+          req.session.username = username
+          req.session.userid = result[0].user_id
+        } else {
+          data = {
+            code: 1,
+            msg: '密码错误'
+          }
         }
       }
     }

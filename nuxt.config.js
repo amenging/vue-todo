@@ -12,7 +12,7 @@ const renderer = createRenderer({
 })
 
 module.exports = {
-  mode: 'universal',
+  mode: 'spa',
 
   /*
   ** Headers of the page
@@ -71,11 +71,11 @@ module.exports = {
   },
 
   proxy: {
-    '/api': {
-      target: 'http://localhost:3000'
-      // : 'http://yapi.demo.qunar.com/mock/16752'
-    },
-    changeOrigin: true
+    // '/api': {
+    //   target: 'http://localhost:5000'
+    //   // : 'http://yapi.demo.qunar.com/mock/16752'
+    // },
+    // changeOrigin: true
   },
 
   /*
