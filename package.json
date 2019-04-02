@@ -1,0 +1,31 @@
+{
+  "name": "TODO",
+  "version": "1.0.0",
+  "description": "Ameng’s TODO",
+  "author": "Ameng",
+  "private": true,
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development nodemon server/index.js --watch server",
+    "build": "nuxt build",
+    "start": "cross-env NODE_ENV=production node server/index.js",
+    "generate": "nuxt generate",
+    "heroku-postbuild": "npm run build"
+  },
+  "engines": {
+    "node": "10.10.0",
+    "npm": "6.x"
+  },
+  "dependencies": {
+    "@nuxtjs/axios": "^5.3.6",
+    "archiver": "^3.0.0",
+    "cross-env": "^5.2.0",
+    "express": "^4.16.4",
+    "express-session": "^1.15.6",
+    "mysql": "^2.16.0",
+    "nuxt": "^2.4.0",
+    "password-hash": "^1.2.2"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.9"
+  }
+}
