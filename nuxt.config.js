@@ -48,7 +48,7 @@ module.exports = {
   plugins: [
     // '@plugins/directive.js',
     {
-      src: '@plugins/interceptor.js',
+      src: '@plugins/directive.js',
       ssr: true
     }
   ],

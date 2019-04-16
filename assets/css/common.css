@@ -118,7 +118,7 @@ header {
   cursor: pointer;
   padding: 10px;
   /*transition: .3s;*/
-  margin: 1px auto;
+  /*margin: 1px auto;*/
   position: relative;
   display: flex;
   justify-content: space-between;

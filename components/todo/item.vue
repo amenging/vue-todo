@@ -61,7 +61,7 @@
           class="editInput"
           v-if="editIndex == list.items_id && list.status == 0"
           v-model.trim="editValue"
-
+          v-focus="true"
           @blur="confirmEdit(list.items_id)"
           @keyup.enter="editIndex = null"/>
       </li>

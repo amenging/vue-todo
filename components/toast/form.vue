@@ -5,6 +5,8 @@
         <div class="form-control">
           <label>清单名称</label>
           <input
+            v-focus="true"
+            v-if="showEditForm"
             autofocus
             maxlength="10"
             @keyup.enter="submit"

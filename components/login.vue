@@ -5,9 +5,10 @@
         <div class="form-control">
           <label>用户名</label>
           <input
+            v-if="showLogin"
+            v-focus="true"
             autocomplete="username"
             placeholder="用户名（10个字符以内）"
-            autofocus
             maxlength="10"
             v-model.trim="username" />
         </div>
