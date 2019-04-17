@@ -58,11 +58,6 @@ export async function editTodoItem (params) {
   return await axios.post('/api/todo/edit_todo_item', { ...params })
 }
 
-// 修改事项状态
-export async function changeTodoItemStatus (params) {
-  return await axios.post('/api/todo/change_todo_item_status', { ...params })
-}
-
 // 导出清单
 export async function exportFile (params) {
   return await axios.post('/api/todo/export_file', { ...params })

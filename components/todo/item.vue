@@ -47,11 +47,17 @@
             class="listContent">{{ list.content }}</span>
         </div>
 
-        <!-- 删除按钮 -->
+        <!-- 操作按钮 -->
         <div>
           <span
+            @click="markTodoItem(list.items_id, list.mark)"
+            class="actionItem"
+            :class="{'active': list.mark == 1}">
+            <i class="iconfont">{{ list.mark == 0 ? "&#xe64e;" : "&#xe64d;"}}</i>
+          </span>
+          <span
             @click="removeTodoItem(list.items_id)"
-            class="deleteItem">
+            class="actionItem">
             <i class="iconfont icon-delete"></i>
           </span>
         </div>
@@ -131,15 +137,26 @@
 
         this.$store.dispatch('editTodoItem', {
           item_id: id,
-          content: this.editValue
+          value: this.editValue,
+          key: 'content'
         })
       },
 
       // 改变事项状态
       changeTodoItemStatus (id, status) {
-        this.$store.dispatch('changeTodoItemStatus', {
+        this.$store.dispatch('editTodoItem', {
           item_id: id,
-          status: 1 - status
+          value: 1 - status,
+          key: 'status'
+        })
+      },
+
+      markTodoItem (id, mark) {
+        console.log(mark)
+        this.$store.dispatch('editTodoItem', {
+          item_id: id,
+          value: 1 - mark,
+          key: 'mark'
         })
       },
 

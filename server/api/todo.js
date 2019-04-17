@@ -190,42 +190,16 @@ const Todo = {
 
   // 编辑事项
   editTodoItem: async function (req, res) {
-    const content = req.body.content,
-      item_id = req.body.item_id
+    const key = req.body.key,
+      item_id = req.body.item_id,
+      value = req.body.value
 
-    if (content == undefined || item_id == undefined) {
+    if (key == undefined || item_id == undefined || value == undefined) {
       res.json(argError)
       return
     }
 
-    const sql = `update items set content='${content}' where items_id='${item_id}'`
-
-    const result = await mysqlConn.getConn(sql)
-
-    let data = {}
-
-    if (result.affectedRows === 1) {
-      data = {
-        code: 0
-      }
-    } else {
-      data = connetError
-    }
-
-    res.json(data)
-  },
-
-  // 修改事项状态
-  changeTodoItemStatus: async function (req, res) {
-    const item_id = req.body.item_id,
-      status = req.body.status
-
-    if (item_id == undefined || status == undefined) {
-      res.json(argError)
-      return
-    }
-
-    const sql = `update items set status='${status}' where items_id='${item_id}'`
+    const sql = `update items set ${key}='${value}' where items_id='${item_id}'`
 
     const result = await mysqlConn.getConn(sql)
 

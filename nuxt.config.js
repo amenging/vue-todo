@@ -1,16 +1,6 @@
 const pkg = require('./package')
 const { createRenderer } = require('vue-server-renderer')
 
-const renderer = createRenderer({
-  directives: {
-    focus (el, {value}) {
-      if (value) {
-        el.focus = value
-      }
-    }
-  }
-})
-
 module.exports = {
   mode: 'universal',
 
@@ -85,21 +75,9 @@ module.exports = {
     /*
     ** You can extend webpack config here
     */
-    devtool: 'cheap-module-eval-source-map',
     extend(config, ctx) {
 
     },
-    ssr: {
-      shouldPreload: () => false,
-      directives: {
-        focus (el, {value}) {
-          if (value) {
-            el.focus = value
-          }
-        }
-      }
-    }
   },
 
-  renderer
 }

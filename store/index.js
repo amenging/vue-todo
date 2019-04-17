@@ -6,7 +6,6 @@ import {
   addTodoItem,
   removeTodoItem,
   editTodoItem,
-  changeTodoItemStatus,
 } from '@/assets/api/todo'
 
 const errMsg = '电波传送失败哟~'
@@ -224,17 +223,9 @@ export const mutations = {
       return ele.items_id == data.item_id
     })
 
-    item.content = data.content
+    item[data.key] = data.value
   },
 
-  // 修改事项状态
-  changeTodoItemStatus (state, item_id) {
-    const item = state.items.find(ele => {
-      return ele.items_id == item_id
-    })
-
-    item.status = !item.status
-  }
 }
 
 let messageTimeout
@@ -306,6 +297,7 @@ export const actions = {
           list_id: res.data.data.id,
           ...params
         })
+        commit('changeCurrentIndex', state.lists.length)
       }
     })
   },
@@ -368,7 +360,8 @@ export const actions = {
         commit('addTodoItem', {
           ...params,
           items_id: res.data.data.id,
-          status: 0
+          status: 0,
+          mark: 0
         })
       }
 
@@ -403,21 +396,6 @@ export const actions = {
 
       if (res.data.code === 0) {
         commit('editTodoItem', data)
-      }
-    })
-  },
-
-  // 修改事项状态
-  changeTodoItemStatus ({ commit, dispatch }, data) {
-    commit('toggleLoading')
-
-    changeTodoItemStatus(data).then(res => {
-      commit('toggleLoading')
-
-      dispatch('toggleMessage', res.data.code === 0 ? '修改事项状态成功' : errMsg)
-
-      if (res.data.code === 0) {
-        commit('changeTodoItemStatus', data.item_id)
       }
     })
   },

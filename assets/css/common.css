@@ -5,12 +5,12 @@
 }
 @font-face {
   font-family: 'iconfont';  /* project id 1118917 */
-  src: url('https://at.alicdn.com/t/font_1118917_4cap4a3kz9y.eot');
-  src: url('https://at.alicdn.com/t/font_1118917_4cap4a3kz9y.eot?#iefix') format('embedded-opentype'),
-  url('https://at.alicdn.com/t/font_1118917_4cap4a3kz9y.woff2') format('woff2'),
-  url('https://at.alicdn.com/t/font_1118917_4cap4a3kz9y.woff') format('woff'),
-  url('https://at.alicdn.com/t/font_1118917_4cap4a3kz9y.ttf') format('truetype'),
-  url('https://at.alicdn.com/t/font_1118917_4cap4a3kz9y.svg#iconfont') format('svg');
+  src: url('//at.alicdn.com/t/font_1118917_mx6ge1oy2ko.eot');
+  src: url('//at.alicdn.com/t/font_1118917_mx6ge1oy2ko.eot?#iefix') format('embedded-opentype'),
+  url('//at.alicdn.com/t/font_1118917_mx6ge1oy2ko.woff2') format('woff2'),
+  url('//at.alicdn.com/t/font_1118917_mx6ge1oy2ko.woff') format('woff'),
+  url('//at.alicdn.com/t/font_1118917_mx6ge1oy2ko.ttf') format('truetype'),
+  url('//at.alicdn.com/t/font_1118917_mx6ge1oy2ko.svg#iconfont') format('svg');
 }
 html, body {
   font-family: 'Josefin_Sans', 'Microsoft JhengHei', 'Microsoft YaHei';
@@ -107,7 +107,8 @@ header {
   margin-left: 5px;
 }
 .todo-app {
-  display: flex;
+  display: -ms-flexbox;
+  -ms-flex-direction: column;
   justify-content: space-between;
   margin-top: 20px;
   align-items: flex-start;
@@ -131,7 +132,7 @@ header {
   border-radius: 4px;
   background: #fcfcfc;
 }
-.titleActive::before {
+.titleActive:before {
   content: '';
   width: 1px;
   position: absolute;
@@ -211,8 +212,8 @@ header {
 .editItem {
   float: right;
 }
-.deleteItem {
-  float: right;
+.actionItem.active {
+  color: #02AAB0;
 }
 .flex-list {
   display: flex;
@@ -252,17 +253,14 @@ header {
   height: 100%;
   z-index: 100;
   display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .dialog-body {
   background: #fff;
-  margin: auto;
-  top: 100px;
-  right: 0;
-  left: 0;
   border-radius: 4px;
   box-sizing: border-box;
   overflow: hidden;
-  margin-top: 100px;
 }
 .dialog-body label {
   color: #000;
@@ -452,7 +450,7 @@ footer {
   text-align: center;
 }
 .nothing {
-  width: 100%;
+  width: 80%;
   text-align: center;
 }
 .load {
@@ -562,7 +560,7 @@ footer {
 }
 
 .tips {
-  position: absolute;
+  position: fixed;
   background: rgba(1, 178, 175, 0.45);
   padding: 5px;
   border-radius: 5px;
@@ -570,9 +568,9 @@ footer {
   z-index: 1;
 }
 
-.hideLeft {
+/*.hideLeft {
   left: -225px;
-}
+}*/
 .showLeft {
   animation: toRight .3s forwards;
 }
@@ -606,6 +604,9 @@ footer {
   display: none;
 }
 @media screen and (max-width: 700px) {
+  .hideLeft {
+    left: -225px;
+  }
   .phone-username {
     display: block;
   }
@@ -637,8 +638,6 @@ footer {
     top: 0;
     background: #fff;
     height: 100%;
-    /*width: 45%;*/
-    /*left: 0;*/
     z-index: 3;
     border-radius: 0;
     transition: .3s;

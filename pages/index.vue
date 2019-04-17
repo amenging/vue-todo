@@ -21,7 +21,7 @@
     <!-- 确认弹窗 -->
     <prompt></prompt>
 
-    <div class="grey" v-show="showMenu" @click="toggleShowMenu"></div>
+    <div class="grey" v-show="showMenu" @click="toggleShowMenu(false)"></div>
 
     <!-- todo主体 -->
     <div class="todo-app">

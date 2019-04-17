@@ -81,11 +81,13 @@
         const list_ids = lists.map(ele => ele.list_id)
 
         this.items.forEach(ele => {
-          const arr = lists[list_ids.indexOf(ele.list_id)]
-          if (arr.items) {
-            arr.items.push(ele.content)
-          } else {
-            arr.items = [ele.content]
+          if (list_ids.indexOf(ele.list_id) > -1) {
+            const arr = lists[list_ids.indexOf(ele.list_id)]
+            if (arr.items) {
+              arr.items.push(ele.content)
+            } else {
+              arr.items = [ele.content]
+            }
           }
         })
 
@@ -99,7 +101,6 @@
         const file = JSON.stringify(lists)
 
         const blob = new Blob([file]), a = document.createElement("a")
-
         const date = new Date()
         const n = '' + date.getFullYear() + (date.getMonth() + 1) + date.getDate() +
           date.getHours() + date.getMinutes() + date.getSeconds()
@@ -167,5 +168,9 @@
 }
 .userMessage::before {
   left: 0;
+}
+.export-form {
+  max-height: 400px;
+  overflow: scroll;
 }
 </style>

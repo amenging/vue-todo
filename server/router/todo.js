@@ -40,11 +40,6 @@ router.post('/edit_todo_item', (req, res, next) => {
   Todo.editTodoItem(req, res)
 })
 
-// 修改事项状态
-router.post('/change_todo_item_status', (req, res, next) => {
-  Todo.changeTodoItemStatus(req, res)
-})
-
 // 导出清单
 router.post('/export_file', (req, res, next) => {
   Todo.exportFile(req, res)
