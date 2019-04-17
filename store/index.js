@@ -249,9 +249,12 @@ export const actions = {
 
   // 初始化列表
   listInit ({ commit, state }, userid) {
+    commit('toggleLoading')
+
     const params = { userid: state.USER_ID }
 
     getTodoLists(params).then(res => {
+      commit('toggleLoading')
       if (res.data.data && res.data.data.lists) {
         commit('setLists', res.data.data.lists)
         commit('setItems', res.data.data.items)
@@ -268,11 +271,6 @@ export const actions = {
         username: req.session.username,
         userid: req.session.userid
       })
-
-      // console.log('init req.session:', req.session)
-
-      // 从这里请求不经过代理？
-      // await dispatch('listInit', req.session.userid)
     } else if (req.session && !req.session.username) {
       // console.log('no session')
       commit('setUserInfo', {
@@ -297,7 +295,6 @@ export const actions = {
           list_id: res.data.data.id,
           ...params
         })
-        commit('changeCurrentIndex', state.lists.length)
       }
     })
   },

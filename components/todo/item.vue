@@ -152,7 +152,6 @@
       },
 
       markTodoItem (id, mark) {
-        console.log(mark)
         this.$store.dispatch('editTodoItem', {
           item_id: id,
           value: 1 - mark,

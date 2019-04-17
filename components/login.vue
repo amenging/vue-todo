@@ -137,10 +137,6 @@
         'toggleLoading',
         'setUserInfo',
       ])
-    },
-
-    mounted () {
-
     }
   }
 </script>
