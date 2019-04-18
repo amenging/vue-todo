@@ -38,7 +38,7 @@
               <span class="triangle"></span>
               <ul>
                 <li class="phone-username">{{ username }}</li>
-                <li @click='clearStorage'>删除本地记录</li>
+                <!-- <li @click='clearStorage'>删除本地记录</li> -->
                 <li @click='logout'>退出登录</li>
               </ul>
             </div>
@@ -107,7 +107,7 @@
             @mouseenter='showTips("新增清单", $event)'>
             <i class="iconfont icon-add"></i>
           </button>
-          <button v-if='username'
+      <!--     <button v-if='username'
             class="exportFile"
             @click='exportFile'
             @mouseenter='showTips("导出json文件", $event)'>
@@ -118,12 +118,12 @@
             for="file"
             @mouseenter='showTips("导入json文件", $event)'>
             <i class="iconfont icon-cloud-up"></i>
-          </label>
-          <input hidden
+          </label> -->
+       <!--    <input hidden
             ref='fileInput' 
             @change='importFile($event)' 
             id="file" 
-            type="file"></input>
+            type="file"></input> -->
         </div>
       </div>
       

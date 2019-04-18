@@ -209,8 +209,7 @@ Vue.component('list-dialog', {
   },
   data () {
     return {
-      editListValue: this.listdata.name || '',
-      online: this.listdata.online == false ? false : true
+      editListValue: this.listdata.name || ''
     }
   },
   template: `
@@ -223,10 +222,6 @@ Vue.component('list-dialog', {
             maxlength='10' 
             @keyup.enter='submit' 
             v-model.trim='editListValue' />
-        </div>
-        <div class='form-control'>
-          <label>云端同步</label>
-          <input v-model='online' type='checkbox' />
         </div>
       </div>
       <div class='dialog-footer'>
@@ -241,8 +236,7 @@ Vue.component('list-dialog', {
     },
     submit () {
       this.$emit('submitlist', {
-        name: this.editListValue,
-        online: this.online
+        name: this.editListValue
       })
     },
   }
@@ -449,7 +443,6 @@ const Cloud = {
         lists.forEach(ele => {
           arr.push({
             name: ele.list_name,
-            online: true,
             lists: [],
             list_id: ele.list_id
           })
@@ -459,25 +452,7 @@ const Cloud = {
           arr[list_id.indexOf(ele.list_id)].lists.push(ele)
         })
 
-        const obj = localStorage.getItem(name)
-
-        let u_id = 'u_0'
-
-        if (obj) {
-          const json = JSON.parse(obj)
-          const todos = json.todos
-          // if (json.username == name) {
-            for (let i in todos) {
-              if (list_name.indexOf(todos[i].name) == -1) {
-                todos[i].online = false
-                arr.push(todos[i])
-              }
-            }
-          // }
-          if (json.u_id) u_id = json.u_id
-        }
-
-        resolve({ arr, u_id })
+        resolve({ arr })
 
       })
       .catch(function (error) {
@@ -571,19 +546,12 @@ const Todo = new Vue({
 
       const newStatus = Math.abs(item.status - 1)
 
-      if (this.todos[this.title].online) {
-        Cloud.changeStatus(newStatus, item.items_id)
-        .then(data => {
-          if (data.code == 0) {
-            item.status = newStatus
-          }
-          this.saveData()
-        })
-      } else {
-        item.status = newStatus
-      }
-
-      this.saveData()
+      Cloud.changeStatus(newStatus, item.items_id)
+      .then(data => {
+        if (data.code == 0) {
+          item.status = newStatus
+        }
+      })
     },
     handleListTitle (i) {
       this.title = i
@@ -598,7 +566,6 @@ const Todo = new Vue({
       }
       this.showDialog = true
 
-      // this.saveData()
     },
     //编辑清单
     editList (i) {
@@ -606,40 +573,24 @@ const Todo = new Vue({
       this.listData = this.todoData.todos[i]
       this.showDialog = true
 
-      // this.saveData()
     },
     //删除清单
     deleteList (i) {
-      const list_id = this.todos[i].list_id, online = this.todos[i].online
+      const list_id = this.todos[i].list_id
 
-      if (online) {
-        Cloud.deleteList(list_id)
-        .then((data) => {
-          if (data.code == 0) {
-            this.todoData.todos.splice(i, 1)
+      Cloud.deleteList(list_id)
+      .then((data) => {
+        if (data.code == 0) {
+          this.todoData.todos.splice(i, 1)
 
-            if (this.title > this.todos.length) this.title = this.title - 1 
+          if (this.title > this.todos.length) this.title = this.title - 1 
 
-            if (this.title == i && this.todoData.todos[i - 1]) {
-              this.title = i - 1
-            }
-
-            this.saveData()
+          if (this.title == i && this.todoData.todos[i - 1]) {
+            this.title = i - 1
           }
-        })
-      } else {
-        this.todoData.todos.splice(i, 1)
-        
-        if (this.title > this.todos.length) this.title = this.title - 1
 
-        if (this.title == i && this.todoData.todos[i - 1]) {
-          this.title = i - 1
         }
-
-        this.saveData()
-      }
-
-      
+      })
     },
 
     // 事项操作
@@ -650,38 +601,21 @@ const Todo = new Vue({
         return
       }
 
-      let u_id = 'u_' + (this.u_id.substr(2) / 1 + 1)
-      this.u_id = u_id
-
-      this.todoData.u_id = u_id
-      
-
-      
       const list = this.todos[this.title]
-      if (list.online) {
-        Cloud.addNewItem(list.list_id, [{
-          content: val,
-          status: 0
-        }])
-        .then(data => {
-          if (data.code == 0) {
-            this.todoData.todos[this.title].lists.unshift({
-              content: val,
-              status: 0,
-              items_id: data.items_id
-            })
-            this.saveData()
-          }
-        })
-      } else {
-        this.todoData.todos[this.title].lists.unshift({
-          content: val,
-          status: 0,
-          items_id: u_id
-        })
-        this.saveData()
-        this.showWarning('新增本地清单事项成功')
-      }
+      Cloud.addNewItem(list.list_id, [{
+        content: val,
+        status: 0
+      }])
+      .then(data => {
+        if (data.code == 0) {
+          this.todoData.todos[this.title].lists.unshift({
+            content: val,
+            status: 0,
+            items_id: data.items_id
+          })
+        }
+      })
+   
     },
     // 编辑事项
     editItem (id) {
@@ -699,7 +633,6 @@ const Todo = new Vue({
       // this.editIndex = index
       this.editIndex = item.items_id
 
-      // this.saveData()
     },
     // 删除事项
     deleteItem (id) {
@@ -715,19 +648,12 @@ const Todo = new Vue({
 
       const items_id = item.items_id
 
-      if (this.todos[this.title].online) {
-        Cloud.deleteItem(items_id)
-        .then(data => {
-          if (data.code == 0) {
-            this.todoData.todos[this.title].lists.splice(index, 1)
-            this.saveData()
-          }
-        })
-      } else {
-        this.todoData.todos[this.title].lists.splice(index, 1)
-        this.saveData()
-      }
-
+      Cloud.deleteItem(items_id)
+      .then(data => {
+        if (data.code == 0) {
+          this.todoData.todos[this.title].lists.splice(index, 1)
+        }
+      })
     },
 
     // 编辑事项
@@ -752,18 +678,12 @@ const Todo = new Vue({
 
       if (this.editVal == data.val) return
 
-      if (this.todos[this.title].online) {
-        Cloud.confirmEdit(data.val, item.items_id)
-        .then(res => {
-          if (res.code == 0) {
-            item.content = data.val
-            this.saveData()
-          }
-        })
-      } else {
-        item.content = data.val
-        this.saveData()
-      }
+      Cloud.confirmEdit(data.val, item.items_id)
+      .then(res => {
+        if (res.code == 0) {
+          item.content = data.val
+        }
+      })
     },
 
     cancel () {
@@ -780,69 +700,24 @@ const Todo = new Vue({
 
       // 编辑
       if (this.listData) {
-        const beforeOnline = this.todoData.todos[this.title].online
-
-        if (beforeOnline && !data.online) {
-          // 从线上删除
-          Cloud.deleteList(this.todos[this.title].list_id)
-          .then((res) => {
-            if (res.code == 0) {
-              this.todoData.todos[this.title].name = data.name
-              this.$set(this.todoData.todos[this.title], 'online', data.online)
-              this.saveData()
-            }
-          })
-        } else if (!beforeOnline && data.online){
-          // 从本地添加到线上
-          Cloud.addNewList(this.username, this.todos[this.title].name)
-          .then(res => {
-            if (res.code == 0) {
-              this.todoData.todos[this.title].name = data.name
-              this.todos[this.title].list_id = res.list_id
-              const lists = this.todoData.todos[this.title].lists
-
-              Cloud.addNewItem(res.list_id, lists)
-              this.todoData.todos[this.title].online = data.online
-              this.saveData()
-            }
-          })
-        } else if (beforeOnline && data.online) {
-          Cloud.submitListEdit(data.name, this.todos[this.title].list_id)
-          .then(res => {
-            this.todoData.todos[this.title].name = data.name
-            this.saveData()
-          })
-        } else {
+        Cloud.submitListEdit(data.name, this.todos[this.title].list_id)
+        .then(res => {
           this.todoData.todos[this.title].name = data.name
-          this.showWarning('编辑本地清单成功')
-        }
+        })
       } else { // 新增
-        if (data.online) {
-          Cloud.addNewList(this.username, data.name)
-          .then(res => {
-            if (res.code == 0) {
-              this.todoData.todos.push({
-                name: data.name,
-                online: data.online,
-                lists: [],
-                list_id: res.list_id
-              })
-              this.title = this.todoData.todos.length - 1
-              this.saveData()
-            }
-          })
-        } else {
-          this.todoData.todos.push({
-            name: data.name,
-            online: data.online,
-            lists: []
-          })
-          this.title = this.todoData.todos.length - 1
-          this.showWarning('新增本地清单成功')
-        }
+        Cloud.addNewList(this.username, data.name)
+        .then(res => {
+          if (res.code == 0) {
+            this.todoData.todos.push({
+              name: data.name,
+              lists: [],
+              list_id: res.list_id
+            })
+            this.title = this.todoData.todos.length - 1
+          }
+        })
       }
 
-      this.saveData()
       this.listData = ''
       this.showDialog = false
     },
@@ -856,13 +731,7 @@ const Todo = new Vue({
       this.searchValue = ''
     },
 
-    saveData () {
-      localStorage.setItem(this.username, JSON.stringify(this.todoData))
-    },
-
     clearStorage () {
-      localStorage.removeItem(this.username)
-
       Cloud.getAll(this.username)
       .then(data => {
         this.todoData.todos = data.arr
@@ -908,8 +777,7 @@ const Todo = new Vue({
             .then(data => {
               const a = data.arr
               const todoData = {
-                todos: a,
-                u_id: data.u_id
+                todos: a
               }
               this.todoData = todoData
             })
@@ -946,9 +814,7 @@ const Todo = new Vue({
 
     exportFile () {
       const file = JSON.parse(JSON.stringify(this.todoData.todos))
-      file.forEach(ele => {
-        ele.online = false
-      })
+    
       File.exportFile(JSON.stringify(file))
     },
 
@@ -968,7 +834,6 @@ const Todo = new Vue({
       reader.onload = function (e) {
         console.log(e.target.result)
         _this.todoData.todos = JSON.parse(e.target.result)
-        _this.saveData()
       }
 
     },
@@ -1029,8 +894,7 @@ const Todo = new Vue({
         .then(data => {
           const a = data.arr
           todoData = {
-            todos: a,
-            u_id: data.u_id
+            todos: a
           }
 
           this.u_id = data.u_id
