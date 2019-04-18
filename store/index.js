@@ -282,12 +282,16 @@ export const actions = {
 
   // 添加清单
   addTodoList ({ state, commit, dispatch }, data) {
+    commit('toggleLoading')
+
     const params = {
       list_name: state.currentEditListValue,
       user_id: state.USER_ID
     }
 
     addTodoList(params).then(res => {
+      commit('toggleLoading')
+
       dispatch('toggleMessage', res.data.code === 0 ? '添加清单成功' : errMsg)
 
       if (res.data.code === 0) {
@@ -301,11 +305,15 @@ export const actions = {
 
   // 删除清单
   removeTodoList ({ state, commit, dispatch }, data) {
+    commit('toggleLoading')
+
     const params = {
       list_id: state.lists[data].list_id
     }
 
     removeTodoList(params).then(res => {
+      commit('toggleLoading')
+
       dispatch('toggleMessage', res.data.code === 0 ? '删除清单成功' : errMsg)
 
       if (res.data.code === 0) {
@@ -325,12 +333,16 @@ export const actions = {
 
   // 修改清单
   editTodoList ({ state, commit, dispatch }, data) {
+    commit('toggleLoading')
+
     const params = {
       list_id: state.lists[state.currentEditListIndex].list_id,
       list_name: state.currentEditListValue
     }
 
     editTodoList(params).then(res => {
+      commit('toggleLoading')
+
       dispatch('toggleMessage', res.data.code === 0 ? '修改清单成功' : errMsg)
 
       if (res.data.code === 0) {
@@ -371,6 +383,7 @@ export const actions = {
   // 删除事项
   removeTodoItem ({ state, commit, dispatch }, data) {
     commit('toggleLoading')
+
     removeTodoItem(data).then(res => {
       commit('toggleLoading')
 
@@ -386,6 +399,7 @@ export const actions = {
   // 编辑事项
   editTodoItem ({ commit, dispatch }, data) {
     commit('toggleLoading')
+
     editTodoItem(data).then(res => {
       commit('toggleLoading')
 
@@ -399,6 +413,8 @@ export const actions = {
 
   // 清除当前清单的已完成事项
   clearDoneItems ({ state, commit, dispatch }) {
+    commit('toggleLoading')
+
     const item_id = state.items.filter(ele => {
       return ele.list_id == state.lists[state.currentIndex].list_id && ele.status == 1
     }).map(ele => ele.items_id)
@@ -409,6 +425,8 @@ export const actions = {
       }
 
       removeTodoItem(params).then(res => {
+        commit('toggleLoading')
+        
         dispatch('toggleMessage', res.data.code === 0 ? '清除完成' : errMsg)
 
         if (res.data.code === 0) {
