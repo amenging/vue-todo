@@ -53,7 +53,6 @@
     methods: {
       logout () {
         userLogout().then(res => {
-          console.log(res)
           if (res.data.code == 0) {
             this.setUserInfo({
               userid: null,

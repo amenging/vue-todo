@@ -34,7 +34,7 @@
     </div>
 
     <!-- 未登录提示信息 -->
-    <div class="nothing" v-if="USER_ID == null">请先先登录或注册哦</div>
+    <div class="nothing" v-if="USER_ID == null">请先登录或注册哦</div>
   </div>
 </template>
 

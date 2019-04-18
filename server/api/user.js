@@ -1,5 +1,5 @@
 const mysqlConn = require('../db')
-const PasswordHash = require('password-hash')
+const PHPPasswordHash = require('node-php-password')
 
 const UserAction = {
   // 用户登录
@@ -24,7 +24,8 @@ const UserAction = {
           msg: '用户名不存在'
         }
       } else {
-        if (PasswordHash.verify(password, result[0].user_pass)) {
+        console.log(PHPPasswordHash.verify(password, result[0].user_pass))
+        if (PHPPasswordHash.verify(password, result[0].user_pass)) {
           data = {
             code: 0,
             data: {
@@ -61,7 +62,7 @@ const UserAction = {
         msg: '用户名已存在'
       })
     } else {
-      const hash = PasswordHash.generate(password)
+      const hash = PHPPasswordHash.hash(password)
       const sql = `insert into users (user_name, user_pass) values ('${username}','${hash}')`
 
       const result = await mysqlConn.getConn(sql)

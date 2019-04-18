@@ -449,10 +449,6 @@ footer {
   color: #757171;
   text-align: center;
 }
-.nothing {
-  width: 80%;
-  text-align: center;
-}
 .load {
   animation: loading 1s cubic-bezier(0.24, 0.21, 0.38, 0.54) infinite;
   display: inline-block;

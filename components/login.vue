@@ -78,7 +78,6 @@
           username: this.username,
           password: this.password
         }).then(res => {
-          console.log(res)
           this.toggleLoading()
 
           if (res.data.code == 0) {
