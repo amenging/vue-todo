@@ -48,16 +48,14 @@
         </div>
 
         <!-- 操作按钮 -->
-        <div>
-          <span
-            @click="markTodoItem(list.items_id, list.mark)"
-            class="actionItem"
-            :class="{'active': list.mark == 1}">
-            <i class="iconfont">{{ list.mark == 0 ? "&#xe64e;" : "&#xe64d;"}}</i>
+        <div class="buttons">
+          <span @click="changeTodoItemMark(list.items_id, list.mark)">
+            <i class="iconfont" v-if="list.mark == 0">&#xe64e;</i>
+            <i class="iconfont red" v-else>&#xe64d;</i>
           </span>
           <span
             @click="removeTodoItem(list.items_id)"
-            class="actionItem">
+            class="deleteItem">
             <i class="iconfont icon-delete"></i>
           </span>
         </div>
@@ -67,7 +65,7 @@
           class="editInput"
           v-if="editIndex == list.items_id && list.status == 0"
           v-model.trim="editValue"
-          v-focus="true"
+          v-focus="editIndex == list.items_id"
           @blur="confirmEdit(list.items_id)"
           @keyup.enter="editIndex = null"/>
       </li>
@@ -97,7 +95,7 @@
     computed: {
       ...mapState([
         'currentIndex',
-        'status'
+        'status',
       ]),
       ...mapGetters([
         'currentItems'
@@ -151,7 +149,7 @@
         })
       },
 
-      markTodoItem (id, mark) {
+      changeTodoItemMark (id, mark) {
         this.$store.dispatch('editTodoItem', {
           item_id: id,
           value: 1 - mark,
@@ -193,5 +191,35 @@
   .clear i {
     color: #fff;
     font-size: 22px;
+  }
+  .buttons span {
+    position: relative;
+  }
+  .buttons span {
+    padding-right: 4px;
+    padding-left: 4px;
+  }
+  .buttons span:first-child {
+    font-size: 16px;
+  }
+  .buttons span:first-child::after {
+    content: "";
+    height: 15px;
+    width: 1px;
+    background: #ccc;
+    position: absolute;
+    margin: auto;
+    top: 0;
+    bottom: 0;
+    right: 0;
+  }
+  .todo-list li {
+    line-height: 20px;
+  }
+  .todo-list li i {
+    vertical-align: middle;
+  }
+  .red {
+    color: #01b9ae;
   }
 </style>

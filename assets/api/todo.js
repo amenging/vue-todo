@@ -24,8 +24,18 @@ import axios from 'axios'
 // })
 
 // 获取数据列表
+export async function getTodoAll (params) {
+  return await axios.post('/api/todo/get_todo_all', {...params })
+}
+
+// 获取清单
 export async function getTodoLists (params) {
-  return await axios.post('/api/todo/get_todo_lists', {...params })
+  return await axios.post('/api/todo/get_todo_lists', { ...params })
+}
+
+// 获取事项
+export async function getTodoItems (params) {
+  return await axios.post('/api/todo/get_todo_items', { ...params })
 }
 
 // 添加清单
@@ -56,11 +66,6 @@ export async function removeTodoItem (params) {
 // 编辑事项
 export async function editTodoItem (params) {
   return await axios.post('/api/todo/edit_todo_item', { ...params })
-}
-
-// 导出清单
-export async function exportFile (params) {
-  return await axios.post('/api/todo/export_file', { ...params })
 }
 
 // 导入清单

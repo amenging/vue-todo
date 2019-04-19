@@ -12,7 +12,7 @@ const connetError = {
 
 const Todo = {
   // 获取数据列表
-  getTodoLists: async function (req, res) {
+  getTodoAll: async function (req, res) {
     const userid = req.body.userid
     if (userid == undefined) {
       res.json(errMsg)
@@ -40,6 +40,58 @@ const Todo = {
     } else {
       res.json({
         data: result_lists
+      })
+    }
+  },
+
+  // 获取清单列表
+  getTodoLists: async function (req, res) {
+    const userid = req.body.userid
+    if (userid == undefined) {
+      res.json(errMsg)
+      return
+    }
+
+    const sql = `select * from lists where user_id ='${userid}' order by create_time`
+
+    const result_lists = await mysqlConn.getConn(sql)
+
+    if (result_lists.length > 0) {
+      res.json({
+        data: {
+          code: 0,
+          lists: result_lists
+        }
+      })
+    } else {
+      res.json({
+        data: result_lists
+      })
+    }
+  },
+
+  // 获取事项列表
+  getTodoItems: async function (req, res) {
+    const list_id = req.body.list_id
+    if (list_id == undefined) {
+      res.json(errMsg)
+      return
+    }
+
+    const sql = `select * from items where list_id = '${list_id}' order by create_time desc`
+
+    const result_items = await mysqlConn.getConn(sql)
+
+    if (result_items.length > 0) {
+      res.json({
+        data: {
+          code: 0,
+          items: result_items
+        }
+      })
+    } else {
+      res.json({
+        data: result_items
       })
     }
   },
@@ -190,11 +242,11 @@ const Todo = {
 
   // 编辑事项
   editTodoItem: async function (req, res) {
-    const key = req.body.key,
+    const value = req.body.value,
       item_id = req.body.item_id,
-      value = req.body.value
+      key = req.body.key
 
-    if (key == undefined || item_id == undefined || value == undefined) {
+    if (value == undefined || item_id == undefined || key == undefined) {
       res.json(argError)
       return
     }
@@ -216,8 +268,7 @@ const Todo = {
     res.json(data)
   },
 
-  exportFile: async function (req, res) {},
-
+  // 导入清单
   importFile: async function (req, res) {
     const lists = req.body.data,
       user_id = req.body.user_id

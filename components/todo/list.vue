@@ -46,7 +46,8 @@
       ...mapState([
         'lists',
         'currentIndex',
-        'showMenu'
+        'showMenu',
+        'hasLoadedLists'
       ])
     },
 
@@ -59,13 +60,14 @@
         })
       },
 
-      touchStart () {},
-
-      deleteList () {},
-
       _changeCurrentIndex (index) {
         this.changeCurrentIndex(index)
         this.toggleShowMenu(false)
+
+        if (this.hasLoadedLists.indexOf(index) == -1) {
+          this.$store.dispatch('getTodoItems')
+        }
+
       },
 
       ...mapMutations([
