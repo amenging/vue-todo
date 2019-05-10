@@ -79,7 +79,7 @@ module.exports = {
 
     },
 
-    publicPath: 'https://d1krgmedyqpj9s.cloudfront.net'
+    publicPath: 'https://d1krgmedyqpj9s.cloudfront.net/_nuxt'
 
   },
 
