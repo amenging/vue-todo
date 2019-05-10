@@ -6,9 +6,9 @@
           <label>用户名</label>
           <input
             v-if="showLogin"
-            v-focus="true"
             autocomplete="username"
             placeholder="用户名（10个字符以内）"
+            v-focus="true"
             maxlength="10"
             v-model.trim="username" />
         </div>
@@ -21,18 +21,25 @@
             maxlength="12"
             v-model.trim="password" />
         </div>
-        <!-- <div class="form-control">
+        <div class="form-control" v-show="!loginform">
           <label>确认密码</label>
           <input
-            type="rePassword"
+            type="password"
             placeholder="请再次输入密码"
             maxlength="12"
             v-model.trim="rePassword" />
-        </div> -->
-        <div class="form-control">
+        </div>
+        <div class="form-control" v-show="loginform">
           <label></label>
           <button @click.stop.prevent="login" class="login">登录</button>
+        </div>
+        <div class="form-control" v-show="!loginform">
+          <label></label>
           <button @click.stop.prevent="reg" class="reg">注册</button>
+        </div>
+        <div class="form-control">
+          <label></label>
+          <div class="changeLoginForm" @click="loginform = !loginform">{{ loginform ? "没有账号？注册一个吧" :"已有账号？马上登录" }}</div>
         </div>
       </form>
     </div>
@@ -53,7 +60,8 @@
         username: '',
         password: '',
         rePassword: '',
-        status: 'login'
+        status: 'login',
+        loginform: true
       }
     },
 
@@ -85,7 +93,7 @@
               userid: res.data.data.userid,
               username: this.username
             })
-            this.toggleMessage('登陆成功')
+            this.toggleMessage('登录成功')
             this.toggleLogin()
 
             this.$store.dispatch('listInit', res.data.data.userid)
@@ -101,10 +109,10 @@
           return
         }
 
-        // if (this.password != this.rePassword) {
-        //   this.toggleMessage('两次输入的密码不一样')
-        //   return
-        // }
+        if (!this.loginform && this.password != this.rePassword) {
+          this.toggleMessage('两次输入的密码不一样')
+          return
+        }
 
         this.toggleLoading()
 
@@ -136,6 +144,10 @@
         'toggleLoading',
         'setUserInfo',
       ])
+    },
+
+    mounted () {
+
     }
   }
 </script>
@@ -143,5 +155,15 @@
 <style scoped='scoped'>
   .messageDiv {
     background: rgba(0, 0, 0, 0.6);
+  }
+  .changeLoginForm {
+    text-decoration: underline;
+    font-size: 13px;
+    text-align: center;
+    cursor: pointer;
+    display: inline-block;
+  }
+  .changeLoginForm:hover {
+    color: #0f9280;
   }
 </style>

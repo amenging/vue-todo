@@ -1,11 +1,14 @@
 import {
+  getTodoAll,
   getTodoLists,
+  getTodoItems,
   addTodoList,
   removeTodoList,
   editTodoList,
   addTodoItem,
   removeTodoItem,
   editTodoItem,
+  changeTodoItemStatus,
 } from '@/assets/api/todo'
 
 const errMsg = '电波传送失败哟~'
@@ -63,6 +66,8 @@ export const state = () => ({
   USER_ID: null,
   USER_NAME: null,
 
+  hasLoadedLists: []
+
 })
 
 export const getters = {
@@ -90,7 +95,13 @@ export const mutations = {
 
   // 设置事项列表
   setItems (state, data) {
-    state.items = data
+    state.hasLoadedLists.push(state.currentIndex)
+
+    if (state.items.length === 0) {
+      state.items = data
+    } else {
+      state.items = Array.prototype.concat.apply(state.items, data)
+    }
   },
 
   // 设置编辑的清单名称
@@ -224,8 +235,7 @@ export const mutations = {
     })
 
     item[data.key] = data.value
-  },
-
+  }
 }
 
 let messageTimeout
@@ -255,15 +265,37 @@ export const actions = {
 
     getTodoLists(params).then(res => {
       commit('toggleLoading')
+
       if (res.data.data && res.data.data.lists) {
         commit('setLists', res.data.data.lists)
-        commit('setItems', res.data.data.items)
+
+        getTodoItems({
+          list_id: res.data.data.lists[0].list_id
+        }).then(res => {
+          if (res.data.data && res.data.data.items) {
+            commit('setItems', res.data.data.items)
+          }
+        })
       }
-    }).catch(e => {
-      console.log(e)
     })
   },
 
+  // 按list_id获取items
+  getTodoItems ({ commit, state }) {
+    commit('toggleLoading')
+
+    getTodoItems({
+      list_id: state.lists[state.currentIndex].list_id
+    }).then(res => {
+      commit('toggleLoading')
+
+      if (res.data.data && res.data.data.items) {
+        commit('setItems', res.data.data.items)
+      }
+    })
+  },
+
+  // 获取用户session
   async nuxtServerInit ({ dispatch, commit }, { req }) {
     // 判断用户登录记录
     if (req.session && req.session.username) {
@@ -271,6 +303,11 @@ export const actions = {
         username: req.session.username,
         userid: req.session.userid
       })
+
+      // console.log('init req.session:', req.session)
+
+      // 从这里请求不经过代理？
+      // await dispatch('listInit', req.session.userid)
     } else if (req.session && !req.session.username) {
       // console.log('no session')
       commit('setUserInfo', {
@@ -291,7 +328,6 @@ export const actions = {
 
     addTodoList(params).then(res => {
       commit('toggleLoading')
-
       dispatch('toggleMessage', res.data.code === 0 ? '添加清单成功' : errMsg)
 
       if (res.data.code === 0) {
@@ -369,8 +405,7 @@ export const actions = {
         commit('addTodoItem', {
           ...params,
           items_id: res.data.data.id,
-          status: 0,
-          mark: 0
+          status: 0
         })
       }
 
@@ -413,8 +448,6 @@ export const actions = {
 
   // 清除当前清单的已完成事项
   clearDoneItems ({ state, commit, dispatch }) {
-    commit('toggleLoading')
-
     const item_id = state.items.filter(ele => {
       return ele.list_id == state.lists[state.currentIndex].list_id && ele.status == 1
     }).map(ele => ele.items_id)
@@ -424,9 +457,11 @@ export const actions = {
         item_id
       }
 
+      commit('toggleLoading')
+
       removeTodoItem(params).then(res => {
         commit('toggleLoading')
-        
+
         dispatch('toggleMessage', res.data.code === 0 ? '清除完成' : errMsg)
 
         if (res.data.code === 0) {

@@ -6,8 +6,18 @@ const router = express.Router()
 const Todo = require('../api/todo')
 
 // 获取数据列表
+router.post('/get_todo_all', (req, res, next) => {
+  Todo.getTodoAll(req, res)
+})
+
+// 获取清单
 router.post('/get_todo_lists', (req, res, next) => {
   Todo.getTodoLists(req, res)
+})
+
+// 获取事项
+router.post('/get_todo_items', (req, res, next) => {
+  Todo.getTodoItems(req, res)
 })
 
 // 添加清单
@@ -40,12 +50,7 @@ router.post('/edit_todo_item', (req, res, next) => {
   Todo.editTodoItem(req, res)
 })
 
-// 导出清单
-router.post('/export_file', (req, res, next) => {
-  Todo.exportFile(req, res)
-})
-
-// 导出清单
+// 导入清单
 router.post('/import_file', (req, res, next) => {
   Todo.importFile(req, res)
 })
