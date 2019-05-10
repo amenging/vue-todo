@@ -14,7 +14,7 @@ module.exports = {
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { hid: 'description', name: 'description', content: pkg.description }
     ],
-    link: [
+    link: [ 
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
     ]
   },
@@ -78,6 +78,8 @@ module.exports = {
     extend(config, ctx) {
 
     },
+
+    publicPath: 'https://d1krgmedyqpj9s.cloudfront.net'
   },
 
 }
