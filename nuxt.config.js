@@ -80,6 +80,7 @@ module.exports = {
     },
 
     publicPath: 'https://d1krgmedyqpj9s.cloudfront.net'
+
   },
 
 }
