@@ -405,7 +405,8 @@ export const actions = {
         commit('addTodoItem', {
           ...params,
           items_id: res.data.data.id,
-          status: 0
+          status: 0,
+          mark: 0
         })
       }
 
