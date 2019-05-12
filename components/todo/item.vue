@@ -23,7 +23,8 @@
 
       <!-- 新增事项的输入框 -->
       <input
-        v-if="status == 0"
+        ref="addItemInput"
+        v-show="status == 0"
         v-model.trim="newItemValue"
         @keyup.enter="addTodoItem"
         class="addNewItem"
@@ -89,6 +90,7 @@
         tabtitles: ['全部', '未完成', '已完成'],
         check: "icon-check",
         uncheck: "icon-weixuanyuanquan",
+        adding: false
       }
     },
 
@@ -96,6 +98,7 @@
       ...mapState([
         'currentIndex',
         'status',
+        'showLoading'
       ]),
       ...mapGetters([
         'currentItems'
@@ -114,6 +117,8 @@
           this.$store.dispatch('toggleMessage', '你还什么都没写呢')
           return
         }
+
+        if (this.showLoading) return
 
         this.$store.dispatch('addTodoItem', {
           content: this.newItemValue
@@ -212,6 +217,7 @@
     top: 0;
     bottom: 0;
     right: 0;
+    left: 31px;
   }
   .todo-list li {
     line-height: 20px;
