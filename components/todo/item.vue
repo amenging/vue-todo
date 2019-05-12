@@ -54,6 +54,7 @@
             <i class="iconfont" v-if="list.mark == 0">&#xe64e;</i>
             <i class="iconfont red" v-else>&#xe64d;</i>
           </span>
+          <span class="line"></span>
           <span
             @click="removeTodoItem(list.items_id)"
             class="deleteItem">
@@ -197,6 +198,10 @@
     color: #fff;
     font-size: 22px;
   }
+  .buttons {
+    display: flex;
+    align-content: center;
+  }
   .buttons span {
     position: relative;
   }
@@ -204,20 +209,17 @@
     padding-right: 4px;
     padding-left: 4px;
   }
-  .buttons span:first-child {
-    font-size: 16px;
-  }
-  .buttons span:first-child::after {
-    content: "";
-    height: 15px;
+  .line {
     width: 1px;
+    height: 15px;
     background: #ccc;
     position: absolute;
     margin: auto;
     top: 0;
     bottom: 0;
     right: 0;
-    left: 31px;
+    padding: 0 !important;
+    display: inline-block;
   }
   .todo-list li {
     line-height: 20px;
