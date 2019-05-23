@@ -17,7 +17,7 @@
     </div>
 
     <ul>
-      <div v-if="currentItems.length == 0" class="nothing">
+      <div v-if="currentItems.length == 0" class="noItem">
         啥都木有哦(*/ω＼*)
       </div>
 
@@ -29,6 +29,7 @@
         v-model.trim="newItemValue"
         @keyup.enter="addTodoItem"
         class="addNewItem"
+        autocomplete="off"
         placeholder="输入后enter新增" />
       <li
         v-for="(list, index) in currentItems"
