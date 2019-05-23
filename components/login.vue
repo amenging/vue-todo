@@ -17,7 +17,7 @@
           <label>密码</label>
           <input
             type="password"
-            autocomplete="current-password"
+            key="password"
             placeholder="密码（12个字符以内）"
             maxlength="12"
             v-model.trim="password" />
@@ -26,6 +26,7 @@
           <label>确认密码</label>
           <input
             type="password"
+            key="rePassword"
             placeholder="请再次输入密码"
             maxlength="12"
             v-model.trim="rePassword" />
