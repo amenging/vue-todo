@@ -23,18 +23,18 @@
 
     <div class="grey" v-show="showMenu" @click="toggleShowMenu(false)"></div>
 
+    <!-- 未登录提示信息 -->
+    <div class="nothing" v-if="USER_ID == null">请先登录或注册哦</div>
+
     <!-- todo主体 -->
-    <div class="todo-app">
+    <div class="todo-app" v-else>
       <!-- 清单列表 -->
       <todo-list></todo-list>
 
       <!-- 事项列表 -->
       <todo-item v-if="lists.length > 0"></todo-item>
-      <div class="nothing" v-if="USER_ID != null && lists.length == 0">还没有清单呢</div>
+      <div class="noList" v-if="USER_ID != null && lists.length == 0">还没有清单呢</div>
     </div>
-
-    <!-- 未登录提示信息 -->
-    <div class="nothing" v-if="USER_ID == null">请先登录或注册哦</div>
   </div>
 </template>
 

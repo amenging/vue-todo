@@ -23,6 +23,7 @@
 
       <!-- 新增事项的输入框 -->
       <input
+        key="item"
         ref="addItemInput"
         v-show="status == 0"
         v-model.trim="newItemValue"

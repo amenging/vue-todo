@@ -5,6 +5,7 @@
         <div class="form-control">
           <label>用户名</label>
           <input
+            key="username"
             v-if="showLogin"
             autocomplete="username"
             placeholder="用户名（10个字符以内）"
@@ -125,6 +126,7 @@
           if (res.data.code == 0) {
             this.toggleMessage('注册成功')
             this.toggleLogin()
+            this.loginform = false
           } else {
             this.toggleMessage(res.data.msg)
           }

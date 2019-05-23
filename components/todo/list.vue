@@ -5,7 +5,6 @@
       <li
         v-for="(list, index) in lists"
         @click.self="_changeCurrentIndex(index)"
-        @touchend="touchStart(index)"
         :class="{'titleActive': index == currentIndex}"
         :key="index">
         <div @click.self="_changeCurrentIndex(index)">{{ list.list_name }}</div>
