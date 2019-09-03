@@ -259,19 +259,16 @@ export const actions = {
 
   // 初始化列表
   listInit ({ commit, state }, userid) {
-    commit('toggleLoading')
-
     const params = { userid: state.USER_ID }
 
     getTodoLists(params).then(res => {
-      commit('toggleLoading')
-
       if (res.data.data && res.data.data.lists) {
         commit('setLists', res.data.data.lists)
 
         getTodoItems({
           list_id: res.data.data.lists[0].list_id
         }).then(res => {
+
           if (res.data.data && res.data.data.items) {
             commit('setItems', res.data.data.items)
           }
@@ -282,13 +279,9 @@ export const actions = {
 
   // 按list_id获取items
   getTodoItems ({ commit, state }) {
-    commit('toggleLoading')
-
     getTodoItems({
       list_id: state.lists[state.currentIndex].list_id
     }).then(res => {
-      commit('toggleLoading')
-
       if (res.data.data && res.data.data.items) {
         commit('setItems', res.data.data.items)
       }
@@ -319,15 +312,12 @@ export const actions = {
 
   // 添加清单
   addTodoList ({ state, commit, dispatch }, data) {
-    commit('toggleLoading')
-
     const params = {
       list_name: state.currentEditListValue,
       user_id: state.USER_ID
     }
 
     addTodoList(params).then(res => {
-      commit('toggleLoading')
       dispatch('toggleMessage', res.data.code === 0 ? '添加清单成功' : errMsg)
 
       if (res.data.code === 0) {
@@ -341,15 +331,11 @@ export const actions = {
 
   // 删除清单
   removeTodoList ({ state, commit, dispatch }, data) {
-    commit('toggleLoading')
-
     const params = {
       list_id: state.lists[data].list_id
     }
 
     removeTodoList(params).then(res => {
-      commit('toggleLoading')
-
       dispatch('toggleMessage', res.data.code === 0 ? '删除清单成功' : errMsg)
 
       if (res.data.code === 0) {
@@ -369,16 +355,12 @@ export const actions = {
 
   // 修改清单
   editTodoList ({ state, commit, dispatch }, data) {
-    commit('toggleLoading')
-
     const params = {
       list_id: state.lists[state.currentEditListIndex].list_id,
       list_name: state.currentEditListValue
     }
 
     editTodoList(params).then(res => {
-      commit('toggleLoading')
-
       dispatch('toggleMessage', res.data.code === 0 ? '修改清单成功' : errMsg)
 
       if (res.data.code === 0) {
@@ -389,16 +371,12 @@ export const actions = {
 
   // 添加事项
   addTodoItem ({ state, commit }, data) {
-    commit('toggleLoading')
-
     const params = {
       list_id: state.lists[state.currentIndex].list_id,
       ...data
     }
 
     addTodoItem(params).then(res => {
-      commit('toggleLoading')
-
       commit('toggleMessage', res.data.code === 0 ? '添加事项成功' : errMsg)
 
       if (res.data.code === 0) {
@@ -418,11 +396,7 @@ export const actions = {
 
   // 删除事项
   removeTodoItem ({ state, commit, dispatch }, data) {
-    commit('toggleLoading')
-
     removeTodoItem(data).then(res => {
-      commit('toggleLoading')
-
       dispatch('toggleMessage', res.data.code === 0 ? '删除事项成功' : errMsg)
 
       if (res.data.code === 0) {
@@ -434,11 +408,7 @@ export const actions = {
 
   // 编辑事项
   editTodoItem ({ commit, dispatch }, data) {
-    commit('toggleLoading')
-
     editTodoItem(data).then(res => {
-      commit('toggleLoading')
-
       dispatch('toggleMessage', res.data.code === 0 ? '编辑事项成功' : errMsg)
 
       if (res.data.code === 0) {
@@ -458,11 +428,7 @@ export const actions = {
         item_id
       }
 
-      commit('toggleLoading')
-
       removeTodoItem(params).then(res => {
-        commit('toggleLoading')
-
         dispatch('toggleMessage', res.data.code === 0 ? '清除完成' : errMsg)
 
         if (res.data.code === 0) {

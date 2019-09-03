@@ -40,6 +40,10 @@ module.exports = {
     {
       src: '@plugins/directive.js',
       ssr: true
+    },
+    {
+      src: '@plugins/interceptor.js',
+      ssr: true
     }
   ],
 

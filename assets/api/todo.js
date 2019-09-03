@@ -1,28 +1,5 @@
 import axios from 'axios'
 
-// console.log(this)
-// import { state } from '@/store/index.js'
-// import Vue from 'vue'
-
-// axios.interceptors.request.use((config) => {
-// console.log(state)
-//   // console.log(config)
-//   vuex.commit('toggleLoading')
-//   return config
-// }, err => {
-//   return Promise.reject(err)
-// })
-
-// axios.interceptors.response.use((res) => {
-//   // Vue.set(Todo, 'waiting', false)
-//   // if (res.data.message && Todo.waiting == false) {
-//   //   Todo.showWarning(res.data.message)
-//   // }
-//   return res
-// }, err => {
-//   return Promise.reject(err)
-// })
-
 // 获取数据列表
 export async function getTodoAll (params) {
   return await axios.post('/api/todo/get_todo_all', {...params })
