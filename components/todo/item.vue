@@ -203,6 +203,7 @@
   .buttons {
     display: flex;
     align-content: center;
+    height: 20px;
   }
   .buttons span {
     position: relative;

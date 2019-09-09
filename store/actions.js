@@ -43,7 +43,6 @@ export default {
         getTodoItems({
           list_id: res.data.data.lists[0].list_id
         }).then(res => {
-
           if (res.data.data && res.data.data.items) {
             commit('setItems', res.data.data.items)
           }
@@ -121,7 +120,12 @@ export default {
           } else {
             currentIndex = data - 1
           }
+
           commit('changeCurrentIndex', currentIndex)
+        }
+        
+        if (state.hasLoadedLists.indexOf(currentIndex) == -1) {
+          dispatch('getTodoItems')
         }
         commit('removeTodoList', data)
       }
