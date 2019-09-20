@@ -21,6 +21,10 @@ export default {
     commit('toggleTips', data)
   },
 
+  toggleLoading (state) {
+    state.showLoading = !state.showLoading
+  },
+
   // 消息提示框
   toggleMessage ({ commit }, data) {
     clearTimeout(messageTimeout)
